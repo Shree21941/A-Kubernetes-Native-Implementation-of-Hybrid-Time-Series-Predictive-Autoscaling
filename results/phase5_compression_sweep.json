@@ -1,0 +1,74 @@
+{
+  "segment": "diurnal",
+  "simulated": true,
+  "pod_cold_start_wall_s": 5.0,
+  "pod_cold_start_measured": false,
+  "rows": [
+    {
+      "compression": 1.0,
+      "per_pod_capacity_rps": 0.325,
+      "peak_pods_needed": 7,
+      "horizon_wall_s": 60.0,
+      "head_start_wall_s": 55.0,
+      "pred_deficit": 629.4,
+      "reac_deficit": 477.4,
+      "advantage_pct": -31.85,
+      "pred_actions": 16
+    },
+    {
+      "compression": 2.0,
+      "per_pod_capacity_rps": 0.649,
+      "peak_pods_needed": 7,
+      "horizon_wall_s": 30.0,
+      "head_start_wall_s": 25.0,
+      "pred_deficit": 629.4,
+      "reac_deficit": 477.4,
+      "advantage_pct": -31.85,
+      "pred_actions": 16
+    },
+    {
+      "compression": 5.0,
+      "per_pod_capacity_rps": 1.623,
+      "peak_pods_needed": 7,
+      "horizon_wall_s": 12.0,
+      "head_start_wall_s": 7.0,
+      "pred_deficit": 629.4,
+      "reac_deficit": 477.4,
+      "advantage_pct": -31.85,
+      "pred_actions": 16
+    },
+    {
+      "compression": 10.0,
+      "per_pod_capacity_rps": 3.245,
+      "peak_pods_needed": 7,
+      "horizon_wall_s": 6.0,
+      "head_start_wall_s": 1.0,
+      "pred_deficit": 629.4,
+      "reac_deficit": 477.4,
+      "advantage_pct": -31.85,
+      "pred_actions": 16
+    },
+    {
+      "compression": 20.0,
+      "per_pod_capacity_rps": 6.49,
+      "peak_pods_needed": 7,
+      "horizon_wall_s": 3.0,
+      "head_start_wall_s": -2.0,
+      "pred_deficit": 649.7,
+      "reac_deficit": 618.2,
+      "advantage_pct": -5.1,
+      "pred_actions": 15
+    },
+    {
+      "compression": 60.0,
+      "per_pod_capacity_rps": 19.47,
+      "peak_pods_needed": 7,
+      "horizon_wall_s": 1.0,
+      "head_start_wall_s": -4.0,
+      "pred_deficit": 801.0,
+      "reac_deficit": 1234.3,
+      "advantage_pct": 35.1,
+      "pred_actions": 13
+    }
+  ]
+}

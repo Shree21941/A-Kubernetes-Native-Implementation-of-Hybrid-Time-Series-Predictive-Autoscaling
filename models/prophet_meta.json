@@ -1,0 +1,41 @@
+[
+  {
+    "name": "reading_a",
+    "daily_fourier": 20,
+    "weekly_fourier": 50,
+    "drop_truncation": false,
+    "n_train_rows": 62496,
+    "fit_ms": 77191.5,
+    "predict_test_ms": 2854.1,
+    "n_test": 26784,
+    "test_mae": 12.246478410687345,
+    "test_rmse": 16.7623236452426,
+    "train_rmse": 18.744044192096414
+  },
+  {
+    "name": "reading_b",
+    "daily_fourier": null,
+    "weekly_fourier": 50,
+    "drop_truncation": false,
+    "n_train_rows": 62496,
+    "fit_ms": 56023.4,
+    "predict_test_ms": 2826.0,
+    "n_test": 26784,
+    "test_mae": 12.254437451824554,
+    "test_rmse": 16.771778100532885,
+    "train_rmse": 18.76910921171358
+  },
+  {
+    "name": "sens_trunc",
+    "daily_fourier": 20,
+    "weekly_fourier": 50,
+    "drop_truncation": true,
+    "n_train_rows": 57549,
+    "fit_ms": 68668.8,
+    "predict_test_ms": 2743.8,
+    "n_test": 26784,
+    "test_mae": 15.384231561017245,
+    "test_rmse": 19.242563328131727,
+    "train_rmse": 19.95631725698782
+  }
+]

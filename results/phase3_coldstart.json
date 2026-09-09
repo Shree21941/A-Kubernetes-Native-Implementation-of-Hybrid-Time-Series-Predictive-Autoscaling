@@ -1,0 +1,252 @@
+{
+  "scale_from": 1,
+  "scale_to": 5,
+  "repeats": 5,
+  "all_ready": {
+    "mean": 2.7,
+    "median": 2.673,
+    "stdev": 0.128,
+    "min": 2.56,
+    "max": 2.909
+  },
+  "first_ready": {
+    "mean": 2.105,
+    "median": 1.943,
+    "stdev": 0.316,
+    "min": 1.932,
+    "max": 2.663
+  },
+  "per_pod": {
+    "schedule_s": {
+      "mean": 0.15,
+      "median": 0.0,
+      "stdev": 0.366,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "start_s": {
+      "mean": 0.65,
+      "median": 1.0,
+      "stdev": 0.489,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "probe_s": {
+      "mean": 1.4,
+      "median": 1.0,
+      "stdev": 0.503,
+      "min": 1.0,
+      "max": 2.0
+    },
+    "total_s": {
+      "mean": 2.2,
+      "median": 2.0,
+      "stdev": 0.696,
+      "min": 1.0,
+      "max": 3.0
+    }
+  },
+  "note": "image pre-loaded on all nodes; steady-state scale-out, not a cold pull",
+  "trials": [
+    {
+      "first_ready_s": 2.663,
+      "all_ready_s": 2.909,
+      "n_new_pods": 4,
+      "pods": [
+        {
+          "pod": "target-app-57f4dcf586-2z8m2",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 2.0,
+          "total_s": 3.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-d85rs",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 2.0,
+          "total_s": 3.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-qmtch",
+          "node": "aiops-worker",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 2.0,
+          "total_s": 3.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-qnljg",
+          "node": "aiops-worker",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 2.0,
+          "total_s": 3.0
+        }
+      ],
+      "trial": 1
+    },
+    {
+      "first_ready_s": 1.932,
+      "all_ready_s": 2.56,
+      "n_new_pods": 4,
+      "pods": [
+        {
+          "pod": "target-app-57f4dcf586-kbpkb",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 1.0,
+          "total_s": 2.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-nj88d",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 1.0,
+          "total_s": 2.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-x4qcp",
+          "node": "aiops-worker",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 2.0,
+          "total_s": 3.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-zvwbb",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 1.0,
+          "total_s": 2.0
+        }
+      ],
+      "trial": 2
+    },
+    {
+      "first_ready_s": 1.943,
+      "all_ready_s": 2.695,
+      "n_new_pods": 4,
+      "pods": [
+        {
+          "pod": "target-app-57f4dcf586-bz46q",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 1.0,
+          "total_s": 2.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-fh7vh",
+          "node": "aiops-worker",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 2.0,
+          "total_s": 3.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-nr76c",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 1.0,
+          "total_s": 2.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-sh46c",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 1.0,
+          "total_s": 2.0
+        }
+      ],
+      "trial": 3
+    },
+    {
+      "first_ready_s": 1.938,
+      "all_ready_s": 2.664,
+      "n_new_pods": 4,
+      "pods": [
+        {
+          "pod": "target-app-57f4dcf586-65klg",
+          "node": "aiops-worker2",
+          "schedule_s": 1.0,
+          "start_s": 0.0,
+          "probe_s": 1.0,
+          "total_s": 2.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-fkbkj",
+          "node": "aiops-worker",
+          "schedule_s": 1.0,
+          "start_s": 0.0,
+          "probe_s": 2.0,
+          "total_s": 3.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-srkt4",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 0.0,
+          "probe_s": 1.0,
+          "total_s": 1.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-vsf2c",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 1.0,
+          "probe_s": 1.0,
+          "total_s": 2.0
+        }
+      ],
+      "trial": 4
+    },
+    {
+      "first_ready_s": 2.048,
+      "all_ready_s": 2.673,
+      "n_new_pods": 4,
+      "pods": [
+        {
+          "pod": "target-app-57f4dcf586-blc4h",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 0.0,
+          "probe_s": 1.0,
+          "total_s": 1.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-cf9qh",
+          "node": "aiops-worker2",
+          "schedule_s": 0.0,
+          "start_s": 0.0,
+          "probe_s": 1.0,
+          "total_s": 1.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-l42sk",
+          "node": "aiops-worker2",
+          "schedule_s": 1.0,
+          "start_s": 0.0,
+          "probe_s": 1.0,
+          "total_s": 2.0
+        },
+        {
+          "pod": "target-app-57f4dcf586-wfxqm",
+          "node": "aiops-worker",
+          "schedule_s": 0.0,
+          "start_s": 0.0,
+          "probe_s": 2.0,
+          "total_s": 2.0
+        }
+      ],
+      "trial": 5
+    }
+  ]
+}

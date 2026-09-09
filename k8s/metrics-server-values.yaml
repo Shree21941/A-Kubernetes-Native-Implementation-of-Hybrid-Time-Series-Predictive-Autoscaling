@@ -1,0 +1,33 @@
+# Helm values for metrics-server on KIND.
+#
+# metrics-server is NOT Prometheus and Prometheus cannot replace it. The built-in HPA
+# reads CPU and memory from the Kubernetes Metrics API (metrics.k8s.io), which only
+# metrics-server serves. Since native HPA is our comparison arm in Phases 6-8, a
+# metrics-server that is quietly broken would make that arm never scale - and the
+# experiment would conclude that prediction beats reaction when in fact reaction was
+# switched off.
+#
+# The two KIND-specific flags below are the entire reason this file exists
+# (CLAUDE.md 3).
+args:
+  # KIND's kubelets serve their metrics endpoint with self-signed certificates that are
+  # not in metrics-server's trust chain. Without this flag every scrape fails TLS
+  # verification and `kubectl top` returns "Metrics API not available" - which reads
+  # like the component is missing rather than misconfigured.
+  - --kubelet-insecure-tls
+  # KIND nodes have no resolvable hostnames from inside the cluster. metrics-server
+  # prefers Hostname by default and cannot connect; InternalIP is the address that
+  # actually routes.
+  - --kubelet-preferred-address-types=InternalIP
+  # Default is 60s. The MAPE loop and the HPA both act on a 60 s cadence, so a 60 s
+  # metric resolution means HPA can be a full cycle behind reality - we would be
+  # measuring metric staleness and attributing it to reactive scaling being slow.
+  - --metric-resolution=15s
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 200Mi

@@ -1,0 +1,34 @@
+switching to arm predictive-hybrid
+
+Switching to arm: predictive-hybrid
+  tearing down every arm (unconditionally)
+  confirmed: no arms attached
+[31m  WARNING: traffic still arriving at 5.897989197859266 req/s - a load generator may still[0m
+[31m           be running. Starting a run now would contaminate it.[0m
+  reset: scaling target-app to 1 and waiting for it to settle
+[32m  reset complete: 1/1 ready, 1 pod(s) total[0m
+  predictive-autoscaler running with FORECASTER=hybrid
+
+[32mOK - exactly one arm active: controller:predictive-autoscaler(1)[0m
+replaying diurnal (480 trace-min, ~48 min wall)
+segment            : diurnal  (a5f02dd376875aac)
+trace window       : 1995-08-28 10:00:00 -> 1995-08-28 17:59:00
+trace minutes      : 480
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 28,988
+planned wall time  : 2,880 s (48.0 min)
+mean / peak rate   : 10.1 / 19.7 req/s
+target             : http://localhost:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 6.3x one pod (needs 7 pods)   mean 3.2x (needs 4)
+
+replaying -> experiments/20260825-044528-diurnal-predictive-hybrid-rep1/ ...
+
+  wall time        : 2,879.6 s (planned 2,880 s)
+  sent / ok / err  : 28,988 / 28,988 / 0
+  latency ms       : mean 63.3  p50 32.83  p90 135.67  p95 198.72  p99 351.11  max 935.46
+  shape corr       : 0.9206  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260825-044528-diurnal-predictive-hybrid-rep1/summary.json and raw/requests.csv
+tar: Removing leading `/' from member names

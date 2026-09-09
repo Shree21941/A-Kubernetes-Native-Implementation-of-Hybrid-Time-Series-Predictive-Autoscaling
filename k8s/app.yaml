@@ -1,0 +1,163 @@
+# The target application: Namespace, Deployment, Service, ServiceMonitor.
+#
+# Kept in one file because these four objects are meaningless apart - the Service
+# selector must match the Deployment's pod labels, and the ServiceMonitor's selector
+# must match the Service's labels. Splitting them across files is how those three label
+# sets drift, and a drifted selector fails SILENTLY: Prometheus keeps running and simply
+# never scrapes anything.
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aiops
+  labels:
+    name: aiops
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: target-app
+  namespace: aiops
+  labels:
+    app: target-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: target-app
+  template:
+    metadata:
+      labels:
+        app: target-app
+    spec:
+      # Default is 30s. Our app has no in-flight work worth draining beyond a single
+      # ~100 ms request, and Phase 6 measures scale-down responsiveness - a 30 s wait
+      # for every terminating pod would be measuring Kubernetes' patience, not ours.
+      terminationGracePeriodSeconds: 5
+      containers:
+        - name: app
+          image: aiops/target-app:v1
+          # IfNotPresent is essential. The image is side-loaded into the KIND nodes with
+          # `kind load docker-image` and does not exist in any registry; the default
+          # Always policy would make every pod fail with ImagePullBackOff.
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            # Set by MEASUREMENT in Phase 4, not by arithmetic. The Phase 3 value of
+            # 250000 was derived from the uncompressed NASA peak of 6.75 req/s; under
+            # the 10x time compression of D-010 the offered rate is ten times that, and
+            # a calibration ramp put per-pod capacity at only 1.01 req/s - which would
+            # have needed 20-23 pods per segment.
+            #
+            # At 80000 rounds (~28.5 ms unloaded latency inside a 500m limit) the
+            # measured capacity is 3.25 req/s, so the frozen segments need 2 pods at
+            # baseline and 5-8 at peak: a real scaling problem that still fits the host.
+            # See results/phase4_capacity_local.json and DEVIATIONS.md D-012.
+            - name: WORK_ITERATIONS
+              value: "80000"
+          resources:
+            requests:
+              # HPA scales on utilisation, and a percentage needs a denominator - that
+              # denominator is this request. Omit it and `kubectl get hpa` reports
+              # <unknown> forever and the HPA comparison arm silently never scales.
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              # Above the request so a pod can absorb a burst, but bounded so that one
+              # hot pod cannot starve its node and make the whole cluster look slow.
+              cpu: 500m
+              memory: 256Mi
+          readinessProbe:
+            # Readiness decides when a pod joins the Service, so THIS is what defines
+            # "Ready" in the cold-start measurement. period 1s with no initial delay
+            # keeps the probe from dominating the number we are trying to measure; at
+            # Kubernetes' default periodSeconds: 10 a pod that booted instantly could
+            # still report Ready up to 10 s late. Recorded in LEARNING_LOG.md, because
+            # a default-configured application would be that much slower.
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 0
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 3
+            successThreshold: 1
+          livenessProbe:
+            # Deliberately NOT the same endpoint as readiness. /healthz answers "is the
+            # process alive", /readyz answers "should it get traffic". If liveness
+            # depended on readiness, a slow-starting pod would be killed and restarted
+            # in a loop instead of simply being kept out of the Service until ready.
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: target-app
+  namespace: aiops
+  labels:
+    # The ServiceMonitor below selects on this label. It must match exactly.
+    app: target-app
+spec:
+  type: NodePort
+  selector:
+    app: target-app
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      # Must match an extraPortMapping in kind-config.yaml, or the host-side load
+      # generator has no route in.
+      nodePort: 30080
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: target-app
+  namespace: aiops
+  labels:
+    app: target-app
+    # kube-prometheus-stack is configured (see prometheus-values.yaml) to select all
+    # ServiceMonitors regardless of labels, so this is documentation rather than a
+    # selector. Left in because the moment someone tightens that setting, this is the
+    # label they will need.
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: target-app          # -> the Service above
+  namespaceSelector:
+    matchNames: ["aiops"]
+  endpoints:
+    - port: http               # the Service's NAMED port, not a number
+      path: /metrics
+      # 1.5s, NOT 15s. This interval lives in the COMPRESSED clock (D-010, D-014).
+      #
+      # The MAPE loop decides once per trace-minute. At C=10 a trace-minute is 6 wall-
+      # seconds, so a decision happens every 6s and a 15s scrape would put ZERO OR ONE
+      # sample inside the window the controller asks about - rate() over that window
+      # returns empty, and the 60-trace-minute look-back the LSTM needs (360 wall-
+      # seconds) would contain 24 samples where 60 distinct trace-minutes are required.
+      #
+      # 1.5s preserves the original intent (four samples per decision) under the clock
+      # the experiment actually runs on. The scrape interval is DOWNSTREAM of the
+      # compression factor, exactly like the horizon and the cooldowns, and leaving it
+      # in real time was a real defect - see D-014.
+      interval: 1500ms
+      scrapeTimeout: 1s

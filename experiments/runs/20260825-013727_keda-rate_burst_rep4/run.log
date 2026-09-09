@@ -1,0 +1,33 @@
+switching to arm keda-rate
+
+Switching to arm: keda-rate
+  tearing down every arm (unconditionally)
+  confirmed: no arms attached
+[31m  WARNING: traffic still arriving at 9.051361212461408 req/s - a load generator may still[0m
+[31m           be running. Starting a run now would contaminate it.[0m
+  reset: scaling target-app to 1 and waiting for it to settle
+[32m  reset complete: 1/1 ready, 1 pod(s) total[0m
+  applied k8s/arm-keda-rate.yaml
+
+[32mOK - exactly one arm active: scaledobject:arm-keda-rate[0m
+replaying burst (180 trace-min, ~18 min wall)
+segment            : burst  (e9b24f8b9fe9023b)
+trace window       : 1995-08-24 06:52:00 -> 1995-08-24 09:51:00
+trace minutes      : 180
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 6,529
+planned wall time  : 1,080 s (18.0 min)
+mean / peak rate   : 6.0 / 14.2 req/s
+target             : http://localhost:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 4.5x one pod (needs 5 pods)   mean 1.9x (needs 2)
+
+replaying -> experiments/20260825-013740-burst-keda-rate-rep4/ ...
+
+  wall time        : 1,079.9 s (planned 1,080 s)
+  sent / ok / err  : 6,529 / 6,529 / 0
+  latency ms       : mean 53.53  p50 34.15  p90 106.16  p95 138.62  p99 214.74  max 358.74
+  shape corr       : 0.9483  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260825-013740-burst-keda-rate-rep4/summary.json and raw/requests.csv

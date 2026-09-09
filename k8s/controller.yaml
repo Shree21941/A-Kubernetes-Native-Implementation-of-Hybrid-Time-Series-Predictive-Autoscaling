@@ -1,0 +1,146 @@
+# Phase 5 - the predictive autoscaler, its RBAC, and its decision log.
+#
+# RBAC note, because this is the part that is easy to get wrong by making it too easy:
+# the controller needs to CHANGE the replica count of one Deployment. It does not need
+# to create pods, read secrets, or touch any other namespace. The Role below is scoped to
+# exactly that, in one namespace, with resourceNames pinning it to the single Deployment
+# it is allowed to scale.
+#
+# Granting cluster-admin "to get it working" would also work, and would mean the
+# experiment could no longer claim the controller only does what it says it does.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: predictive-autoscaler
+  namespace: aiops
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: predictive-autoscaler
+  namespace: aiops
+rules:
+  # Read the Deployment to learn spec.replicas and status.readyReplicas. The controller
+  # re-reads this every cycle rather than trusting its own memory of the last patch -
+  # see the comment in src/controller/executor.py.
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    resourceNames: ["target-app"]
+    verbs: ["get", "list", "watch"]
+  # Patch the scale subresource. This is the narrowest verb that can change replica
+  # count: it cannot alter the pod template, the image, or anything else about the
+  # Deployment, so a bug in the controller cannot silently redeploy the application.
+  - apiGroups: ["apps"]
+    resources: ["deployments/scale"]
+    resourceNames: ["target-app"]
+    verbs: ["get", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: predictive-autoscaler
+  namespace: aiops
+subjects:
+  - kind: ServiceAccount
+    name: predictive-autoscaler
+    namespace: aiops
+roleRef:
+  kind: Role
+  name: predictive-autoscaler
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: predictive-autoscaler
+  namespace: aiops
+  labels: {app: predictive-autoscaler}
+spec:
+  # Exactly one. Two controllers would both read the same metrics, both decide, and both
+  # patch - each seeing the other's changes as cluster state to react to. There is no
+  # leader election here because there is no need for one at n=1, but that is a
+  # deliberate choice for a testbed, not a pattern to copy into production.
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: predictive-autoscaler}
+  template:
+    metadata:
+      labels: {app: predictive-autoscaler}
+    spec:
+      serviceAccountName: predictive-autoscaler
+      terminationGracePeriodSeconds: 10
+
+      # Run the controller on the CONTROL-PLANE node, not on a worker. Two reasons, and
+      # the first is the one that matters for the experiment:
+      #
+      # 1. ISOLATION. kind-config.yaml keeps the default NoSchedule taint on the control
+      #    plane precisely so application pods land only on the workers. Putting the
+      #    controller there means it never competes for CPU with the pods whose latency
+      #    it is measuring. The alternative - letting it schedule onto a worker - makes
+      #    the controller a source of the load it is observing, and it would perturb one
+      #    worker and not the other, so results would depend on which node it landed on.
+      #
+      # 2. DISK. `kind load docker-image` copies to every node by default. This image
+      #    carries TensorFlow, and the host is at 97% disk; loading one copy instead of
+      #    three is the difference between fitting and not. Load with:
+      #        kind load docker-image aiops/predictive-autoscaler:dev \
+      #             --name aiops --nodes aiops-control-plane
+      #
+      # The toleration is required because that taint is what keeps the workers clear.
+      # The controller is small (100m request) and its actual work is a ~7 ms inference
+      # once per 6 s, so it does not meaningfully contend with the API server or etcd.
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: controller
+          image: aiops/predictive-autoscaler:dev
+          imagePullPolicy: IfNotPresent      # loaded via `kind load docker-image`
+          env:
+            # Every one of these is a compressed-clock value or a measured constant.
+            # They are set here, not defaulted in code, so that a run's configuration is
+            # visible in `kubectl get deploy -o yaml` and recorded in the decision log.
+            - {name: COMPRESSION, value: "10"}
+            - {name: PROMETHEUS_URL, value: "http://prometheus-operated.monitoring.svc:9090"}
+            - {name: NAMESPACE, value: "aiops"}
+            - {name: DEPLOYMENT, value: "target-app"}
+            - {name: MIN_REPLICAS, value: "1"}
+            - {name: MAX_REPLICAS, value: "10"}
+            # Measured in Phase 4 (D-012). MUST be re-measured against a real pod before
+            # any Phase 6 result is reported - the current value came from a
+            # CPU-quota-limited local process.
+            - {name: PER_POD_CAPACITY_RPS, value: "3.135"}
+            # Placeholder until src/eval/coldstart.py runs. POD_COLD_START_MEASURED=0
+            # makes the controller log a warning on every start, so a run built on a
+            # guess cannot quietly become a result.
+            - {name: POD_COLD_START_WALL_S, value: "2.7"}
+            - {name: POD_COLD_START_MEASURED, value: "1"}
+            # Which predictive ARM this controller is currently acting as. Patched by
+            # experiments/switch_arm.sh rather than set per-Deployment, so the two
+            # predictive arms are guaranteed to share every other line of code - and so
+            # they can never both be running at once.
+            - {name: FORECASTER, value: "hybrid"}     # "hybrid" | "prophet"
+            - {name: DECISIONS_PATH, value: "/var/log/controller/decisions.jsonl"}
+            - {name: BUNDLE, value: "/app/models/controller_bundle"}
+            # TensorFlow will otherwise start one thread per core on a node it shares
+            # with the pods it is measuring, making the controller a source of the load.
+            - {name: OMP_NUM_THREADS, value: "1"}
+            - {name: TF_NUM_INTRAOP_THREADS, value: "1"}
+          resources:
+            # Deliberately small. If the controller needed a large share of a node it
+            # would perturb the very measurements it exists to take.
+            requests: {cpu: "100m", memory: "512Mi"}
+            limits: {cpu: "500m", memory: "1Gi"}
+          volumeMounts:
+            - {name: decisions, mountPath: /var/log/controller}
+      volumes:
+        # emptyDir: the decision log must survive a container restart within the run, and
+        # is copied out with `kubectl cp` at the end of each experiment. It does NOT need
+        # to survive the cluster, because each experiment writes its own.
+        - name: decisions
+          emptyDir: {}

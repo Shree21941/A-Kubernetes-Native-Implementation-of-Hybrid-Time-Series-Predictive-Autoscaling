@@ -1,0 +1,70 @@
+# Phase 6, ARM 1 - vanilla CPU-based HPA. The floor.
+#
+# This is what Kubernetes gives you out of the box, and what the paper's whole argument
+# is against: it scales on CPU, which is an EFFECT of load rather than load itself, and
+# it only acts after that effect has already appeared. Every criticism the baseline paper
+# makes of reactive autoscaling is a criticism of this object.
+#
+# It must be configured WELL, not as a strawman. A badly-tuned baseline that loses is
+# worth nothing - reviewers reject it, and rightly. So: same replica bounds as every
+# other arm, compressed stabilisation windows, and a CPU target chosen to be genuinely
+# reasonable rather than conveniently bad.
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: arm-hpa-cpu
+  namespace: aiops
+  labels:
+    aiops.arm: "hpa-cpu"          # switch_arm.sh selects on this label
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: target-app
+
+  # IDENTICAL across all arms. Different bounds alone can manufacture a win: an arm
+  # allowed 20 pods will beat one capped at 10 regardless of how it decides. Checked
+  # mechanically by experiments/verify_arms.py, not by eye.
+  minReplicas: 1
+  maxReplicas: 10
+
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          # 70% of the pod's REQUEST (200m), not its limit (500m). So the HPA aims to
+          # keep pods at ~140m and adds capacity beyond that.
+          #
+          # Why 70 and not 50 or 90: at our measured capacity of 3.245 req/s per pod
+          # (D-012), a pod at its 500m limit is saturated. 70% of a 200m request is 140m
+          # = 28% of the limit, which adds pods well before saturation. That is a
+          # defensible production setting - deliberately not tuned to lose.
+          averageUtilization: 70
+
+  # HPA v2 behaviour. All windows are in the COMPRESSED clock (D-010): the defaults are
+  # 0s up / 300s down in real time, and 300 real seconds would be 50 trace-minutes here -
+  # the arm would effectively never scale down within a segment, which is not reactive
+  # autoscaling, it is a broken configuration that happens to look stable.
+  behavior:
+    scaleUp:
+      # 0 = act on every sync. Matching our controller's eagerness upward.
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Pods
+          value: 4
+          periodSeconds: 6          # 1 trace-minute
+      selectPolicy: Max
+    scaleDown:
+      # 30s wall = 5 trace-minutes, matching the predictive planner's scale-down cooldown
+      # in src/controller/config.py. The arms must be equally conservative about giving
+      # up capacity, or a difference in SLO violations would be a difference in
+      # willingness to shrink rather than in ability to predict.
+      stabilizationWindowSeconds: 30
+      policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 30
+      selectPolicy: Min

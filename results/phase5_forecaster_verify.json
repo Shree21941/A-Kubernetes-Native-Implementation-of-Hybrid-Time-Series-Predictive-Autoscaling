@@ -1,0 +1,23 @@
+{
+  "job": "hybrid_lstm_shuffled",
+  "checked_windows": 200,
+  "max_abs_diff": 2.4063296194754002e-05,
+  "mean_abs_diff": 3.535801835639063e-06,
+  "tolerance": 0.001,
+  "agreement_pass": true,
+  "live_tpt": {
+    "table": {
+      "prophet_ms": 0.057,
+      "net_ms": 7.097,
+      "total_ms": 7.16
+    },
+    "live": {
+      "prophet_ms": 138.735,
+      "net_ms": 9.026,
+      "total_ms": 148.729
+    }
+  },
+  "prophet_table_matches_live": true,
+  "control_period_wall_s": 6.0,
+  "phase2_whole_testset_tpt_ms": 8187.2
+}

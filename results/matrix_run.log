@@ -1,0 +1,266 @@
+
+Phase 7 sweep: 60 runs remaining of 60
+  resume policy: a run is complete iff its directory holds metrics.json
+  order: seeded shuffle (20260823) so arm is not confounded with time
+
+[1/60] predictive-hybrid / quiet / rep 5
+    switching to arm predictive-hybrid
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.1 min -> 20260824-172211_predictive-hybrid_quiet_rep5/metrics.json
+[2/60] predictive-prophet / quiet / rep 2
+    switching to arm predictive-prophet
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260824-173119_predictive-prophet_quiet_rep2/metrics.json
+[3/60] hpa-cpu / burst / rep 2
+    switching to arm hpa-cpu
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260824-174033_hpa-cpu_burst_rep2/metrics.json
+[4/60] predictive-hybrid / diurnal / rep 2
+    switching to arm predictive-hybrid
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260824-175846_predictive-hybrid_diurnal_rep2/metrics.json
+[5/60] hpa-cpu / quiet / rep 1
+    switching to arm hpa-cpu
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260824-184700_hpa-cpu_quiet_rep1/metrics.json
+[6/60] keda-rate / burst / rep 2
+    switching to arm keda-rate
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260824-185614_keda-rate_burst_rep2/metrics.json
+[7/60] predictive-prophet / burst / rep 3
+    switching to arm predictive-prophet
+    replaying burst (180 trace-min, ~18 min wall)
+
+[signal 15] finishing the current run, then stopping. Re-run to resume.
+    done in 18.2 min -> 20260824-191428_predictive-prophet_burst_rep3/metrics.json
+
+sweep stopped: 7 succeeded, 0 failed this session
+re-run to resume; ./experiments/run_matrix.py --status for progress
+
+Phase 7 sweep: 53 runs remaining of 60
+  resume policy: a run is complete iff its directory holds metrics.json
+  order: seeded shuffle (20260823) so arm is not confounded with time
+
+[1/53] predictive-prophet / diurnal / rep 5
+    switching to arm predictive-prophet
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 100.0 min -> 20260824-194158_predictive-prophet_diurnal_rep5/metrics.json
+[2/53] predictive-prophet / quiet / rep 4
+    switching to arm predictive-prophet
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260824-212200_predictive-prophet_quiet_rep4/metrics.json
+[3/53] hpa-cpu / diurnal / rep 5
+    switching to arm hpa-cpu
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 115.5 min -> 20260824-213114_hpa-cpu_diurnal_rep5/metrics.json
+[4/53] predictive-hybrid / quiet / rep 4
+    switching to arm predictive-hybrid
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260824-232645_predictive-hybrid_quiet_rep4/metrics.json
+[5/53] predictive-prophet / diurnal / rep 3
+    switching to arm predictive-prophet
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.3 min -> 20260824-233559_predictive-prophet_diurnal_rep3/metrics.json
+[6/53] hpa-cpu / burst / rep 1
+    switching to arm hpa-cpu
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-002417_hpa-cpu_burst_rep1/metrics.json
+[7/53] keda-rate / quiet / rep 5
+    switching to arm keda-rate
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-004230_keda-rate_quiet_rep5/metrics.json
+[8/53] predictive-prophet / burst / rep 1
+    switching to arm predictive-prophet
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-005143_predictive-prophet_burst_rep1/metrics.json
+[9/53] predictive-hybrid / burst / rep 4
+    switching to arm predictive-hybrid
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-010957_predictive-hybrid_burst_rep4/metrics.json
+[10/53] predictive-prophet / quiet / rep 5
+    switching to arm predictive-prophet
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.3 min -> 20260825-012811_predictive-prophet_quiet_rep5/metrics.json
+[11/53] keda-rate / burst / rep 4
+    switching to arm keda-rate
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-013727_keda-rate_burst_rep4/metrics.json
+[12/53] hpa-cpu / diurnal / rep 3
+    switching to arm hpa-cpu
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260825-015540_hpa-cpu_diurnal_rep3/metrics.json
+[13/53] keda-rate / quiet / rep 3
+    switching to arm keda-rate
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-024353_keda-rate_quiet_rep3/metrics.json
+[14/53] keda-rate / quiet / rep 2
+    switching to arm keda-rate
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-025307_keda-rate_quiet_rep2/metrics.json
+[15/53] keda-rate / diurnal / rep 2
+    switching to arm keda-rate
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260825-030220_keda-rate_diurnal_rep2/metrics.json
+[16/53] predictive-hybrid / burst / rep 5
+    switching to arm predictive-hybrid
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-035034_predictive-hybrid_burst_rep5/metrics.json
+[17/53] hpa-cpu / burst / rep 3
+    switching to arm hpa-cpu
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-040848_hpa-cpu_burst_rep3/metrics.json
+[18/53] keda-rate / burst / rep 3
+    switching to arm keda-rate
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-042701_keda-rate_burst_rep3/metrics.json
+[19/53] predictive-hybrid / diurnal / rep 1
+    switching to arm predictive-hybrid
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260825-044514_predictive-hybrid_diurnal_rep1/metrics.json
+[20/53] predictive-hybrid / burst / rep 3
+    switching to arm predictive-hybrid
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-053328_predictive-hybrid_burst_rep3/metrics.json
+[21/53] predictive-prophet / quiet / rep 3
+    switching to arm predictive-prophet
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-055142_predictive-prophet_quiet_rep3/metrics.json
+[22/53] hpa-cpu / quiet / rep 4
+    switching to arm hpa-cpu
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-060056_hpa-cpu_quiet_rep4/metrics.json
+[23/53] hpa-cpu / quiet / rep 5
+    switching to arm hpa-cpu
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-061009_hpa-cpu_quiet_rep5/metrics.json
+[24/53] keda-rate / diurnal / rep 1
+    switching to arm keda-rate
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260825-061920_keda-rate_diurnal_rep1/metrics.json
+[25/53] hpa-cpu / quiet / rep 3
+    switching to arm hpa-cpu
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-070732_hpa-cpu_quiet_rep3/metrics.json
+[26/53] predictive-prophet / diurnal / rep 1
+    switching to arm predictive-prophet
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260825-071645_predictive-prophet_diurnal_rep1/metrics.json
+[27/53] predictive-hybrid / quiet / rep 1
+    switching to arm predictive-hybrid
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-080459_predictive-hybrid_quiet_rep1/metrics.json
+[28/53] predictive-hybrid / quiet / rep 3
+    switching to arm predictive-hybrid
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-081413_predictive-hybrid_quiet_rep3/metrics.json
+[29/53] keda-rate / quiet / rep 1
+    switching to arm keda-rate
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-082327_keda-rate_quiet_rep1/metrics.json
+[30/53] hpa-cpu / quiet / rep 2
+    switching to arm hpa-cpu
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-083240_hpa-cpu_quiet_rep2/metrics.json
+[31/53] predictive-prophet / burst / rep 2
+    switching to arm predictive-prophet
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-084153_predictive-prophet_burst_rep2/metrics.json
+[32/53] hpa-cpu / diurnal / rep 1
+    switching to arm hpa-cpu
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 133.2 min -> 20260825-090007_hpa-cpu_diurnal_rep1/metrics.json
+[33/53] keda-rate / burst / rep 1
+    switching to arm keda-rate
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260825-111322_keda-rate_burst_rep1/metrics.json
+[34/53] keda-rate / quiet / rep 4
+    switching to arm keda-rate
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260825-113137_keda-rate_quiet_rep4/metrics.json
+[35/53] predictive-prophet / burst / rep 4
+    switching to arm predictive-prophet
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.3 min -> 20260825-114051_predictive-prophet_burst_rep4/metrics.json
+[36/53] hpa-cpu / diurnal / rep 2
+    switching to arm hpa-cpu
+    replaying diurnal (480 trace-min, ~48 min wall)
+
+Phase 7 sweep: 18 runs remaining of 60
+  resume policy: a run is complete iff its directory holds metrics.json
+  order: seeded shuffle (20260823) so arm is not confounded with time
+
+[1/18] hpa-cpu / diurnal / rep 2   (previous failed attempts: 1)
+    switching to arm hpa-cpu
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.1 min -> 20260826-010027_hpa-cpu_diurnal_rep2/metrics.json
+[2/18] keda-rate / burst / rep 5
+    switching to arm keda-rate
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260826-014834_keda-rate_burst_rep5/metrics.json
+[3/18] hpa-cpu / burst / rep 5
+    switching to arm hpa-cpu
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260826-020647_hpa-cpu_burst_rep5/metrics.json
+[4/18] predictive-hybrid / burst / rep 2
+    switching to arm predictive-hybrid
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260826-022501_predictive-hybrid_burst_rep2/metrics.json
+[5/18] keda-rate / diurnal / rep 3
+    switching to arm keda-rate
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260826-024315_keda-rate_diurnal_rep3/metrics.json
+[6/18] predictive-hybrid / diurnal / rep 3
+    switching to arm predictive-hybrid
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260826-033128_predictive-hybrid_diurnal_rep3/metrics.json
+[7/18] predictive-prophet / diurnal / rep 4
+    switching to arm predictive-prophet
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260826-041942_predictive-prophet_diurnal_rep4/metrics.json
+[8/18] predictive-hybrid / burst / rep 1
+    switching to arm predictive-hybrid
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260826-050755_predictive-hybrid_burst_rep1/metrics.json
+[9/18] predictive-prophet / burst / rep 5
+    switching to arm predictive-prophet
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260826-052610_predictive-prophet_burst_rep5/metrics.json
+[10/18] keda-rate / diurnal / rep 5
+    switching to arm keda-rate
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260826-054424_keda-rate_diurnal_rep5/metrics.json
+[11/18] hpa-cpu / diurnal / rep 4
+    switching to arm hpa-cpu
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260826-063237_hpa-cpu_diurnal_rep4/metrics.json
+[12/18] keda-rate / diurnal / rep 4
+    switching to arm keda-rate
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260826-072050_keda-rate_diurnal_rep4/metrics.json
+[13/18] predictive-hybrid / diurnal / rep 5
+    switching to arm predictive-hybrid
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260826-080903_predictive-hybrid_diurnal_rep5/metrics.json
+[14/18] hpa-cpu / burst / rep 4
+    switching to arm hpa-cpu
+    replaying burst (180 trace-min, ~18 min wall)
+    done in 18.2 min -> 20260826-085717_hpa-cpu_burst_rep4/metrics.json
+[15/18] predictive-hybrid / diurnal / rep 4
+    switching to arm predictive-hybrid
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260826-091530_predictive-hybrid_diurnal_rep4/metrics.json
+[16/18] predictive-prophet / diurnal / rep 2
+    switching to arm predictive-prophet
+    replaying diurnal (480 trace-min, ~48 min wall)
+    done in 48.2 min -> 20260826-100344_predictive-prophet_diurnal_rep2/metrics.json
+[17/18] predictive-hybrid / quiet / rep 2
+    switching to arm predictive-hybrid
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.2 min -> 20260826-105158_predictive-hybrid_quiet_rep2/metrics.json
+[18/18] predictive-prophet / quiet / rep 1
+    switching to arm predictive-prophet
+    replaying quiet (90 trace-min, ~9 min wall)
+    done in 9.3 min -> 20260826-110112_predictive-prophet_quiet_rep1/metrics.json
+
+sweep stopped: 18 succeeded, 0 failed this session
+re-run to resume; ./experiments/run_matrix.py --status for progress

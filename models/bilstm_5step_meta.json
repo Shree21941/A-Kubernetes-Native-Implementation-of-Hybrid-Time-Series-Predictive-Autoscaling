@@ -1,0 +1,22 @@
+{
+  "tag": "bilstm_5step",
+  "cell": "bilstm",
+  "path": "models/bilstm_5step.keras",
+  "look_back": 60,
+  "horizon": 5,
+  "epochs_run": 39,
+  "best_val_loss": 0.0014597577974200249,
+  "final_train_loss": 0.0015649573178961873,
+  "train_seconds": 4437.1,
+  "n_train_windows": 62432,
+  "n_params": 81301,
+  "seed": 42,
+  "job": "bilstm_5step",
+  "label": "BiLSTM 5-step",
+  "source": "raw",
+  "prophet_config": null,
+  "prophet_predict_ms": 0.0,
+  "net_predict_ms": 4182.0,
+  "tpt_ms": 4182.0,
+  "threads": 6
+}

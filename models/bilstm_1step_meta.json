@@ -1,0 +1,22 @@
+{
+  "tag": "bilstm_1step",
+  "cell": "bilstm",
+  "path": "models/bilstm_1step.keras",
+  "look_back": 60,
+  "horizon": 1,
+  "epochs_run": 48,
+  "best_val_loss": 0.0012386813759803772,
+  "final_train_loss": 0.0012271879240870476,
+  "train_seconds": 4571.0,
+  "n_train_windows": 62436,
+  "n_params": 81301,
+  "seed": 42,
+  "job": "bilstm_1step",
+  "label": "BiLSTM 1-step",
+  "source": "raw",
+  "prophet_config": null,
+  "prophet_predict_ms": 0.0,
+  "net_predict_ms": 4084.6,
+  "tpt_ms": 4084.6,
+  "threads": 6
+}

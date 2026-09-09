@@ -1,0 +1,34 @@
+switching to arm predictive-prophet
+
+Switching to arm: predictive-prophet
+  tearing down every arm (unconditionally)
+  confirmed: no arms attached
+[31m  WARNING: traffic still arriving at 10.14047111553942 req/s - a load generator may still[0m
+[31m           be running. Starting a run now would contaminate it.[0m
+  reset: scaling target-app to 1 and waiting for it to settle
+[32m  reset complete: 1/1 ready, 1 pod(s) total[0m
+  predictive-autoscaler running with FORECASTER=prophet
+
+[32mOK - exactly one arm active: controller:predictive-autoscaler(1)[0m
+replaying burst (180 trace-min, ~18 min wall)
+segment            : burst  (e9b24f8b9fe9023b)
+trace window       : 1995-08-24 06:52:00 -> 1995-08-24 09:51:00
+trace minutes      : 180
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 6,541
+planned wall time  : 1,080 s (18.0 min)
+mean / peak rate   : 6.1 / 14.2 req/s
+target             : http://localhost:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 4.5x one pod (needs 5 pods)   mean 1.9x (needs 2)
+
+replaying -> experiments/20260825-084206-burst-predictive-prophet-rep2/ ...
+
+  wall time        : 1,080.0 s (planned 1,080 s)
+  sent / ok / err  : 6,541 / 6,541 / 0
+  latency ms       : mean 43.98  p50 31.26  p90 81.51  p95 106.69  p99 179.7  max 481.78
+  shape corr       : 0.9603  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260825-084206-burst-predictive-prophet-rep2/summary.json and raw/requests.csv
+tar: Removing leading `/' from member names

@@ -1,0 +1,22 @@
+{
+  "tag": "hybrid_lstm",
+  "cell": "lstm",
+  "path": "models/hybrid_lstm.keras",
+  "look_back": 60,
+  "horizon": 1,
+  "epochs_run": 16,
+  "best_val_loss": 0.001180341118015349,
+  "final_train_loss": 0.0012425328604876995,
+  "train_seconds": 862.0,
+  "n_train_windows": 62436,
+  "n_params": 30651,
+  "seed": 42,
+  "job": "hybrid_lstm",
+  "label": "Prophet+LSTM (hybrid)",
+  "source": "residual",
+  "prophet_config": "reading_a",
+  "prophet_predict_ms": 2854.1,
+  "net_predict_ms": 3302.0,
+  "tpt_ms": 6156.1,
+  "threads": 4
+}

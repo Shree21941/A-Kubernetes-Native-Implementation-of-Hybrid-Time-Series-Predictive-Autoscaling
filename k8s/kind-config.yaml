@@ -1,0 +1,62 @@
+# KIND cluster for the autoscaling testbed.
+#
+# 1 control-plane + 2 workers, per CLAUDE.md 3: a multi-node cluster is needed so that
+# scheduling is a real constraint (pods must be placed, not just started), but five
+# nodes on a 12-CPU laptop that is also running Prometheus and a load generator would
+# spend more time context-switching than serving.
+#
+# The control-plane keeps its default NoSchedule taint, so application pods land on the
+# workers only. That is deliberate: if the app could saturate the control-plane, a load
+# spike would degrade the API server and the autoscaler would be fighting the very
+# congestion it caused - an artefact that would look like a controller bug.
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: aiops
+
+# --------------------------------------------------------------------------------
+# The HPA sync period must be compressed, or Phase 6 is rigged in our favour
+# --------------------------------------------------------------------------------
+# kube-controller-manager re-evaluates every HPA on a fixed timer, default 15 SECONDS,
+# and it is a cluster-wide flag - an HPA manifest cannot override it the way it can
+# override stabilisation windows.
+#
+# Our predictive controller decides every 6 wall-seconds (one trace-minute at C=10).
+# Left at the default, the HPA and KEDA arms would react at 15s while ours acts at 6s,
+# so the reactive arms would lose 9 seconds per decision to an UNCOMPRESSED constant.
+# We would then report that prediction beats reaction, when a large part of the gap was
+# just the two arms living on different clocks (D-010, D-016).
+#
+# 1500ms = 15s / C, matching the compressed scrape interval (D-014). This is the same
+# rule applied to a third place: anything downstream of the compression factor gets
+# divided by it, and a fair comparison requires the BASELINES to be compressed too -
+# not only the method being proposed.
+kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    controllerManager:
+      extraArgs:
+        horizontal-pod-autoscaler-sync-period: "1500ms"
+        # Deprecated in favour of per-HPA `behavior`, but set here as a backstop so an
+        # arm that forgets to declare behavior still runs on the compressed clock
+        # rather than silently inheriting a 5-minute real-time window.
+        horizontal-pod-autoscaler-downscale-stabilization: "30s"
+
+nodes:
+  - role: control-plane
+    # KIND nodes are Docker containers on an internal network, so nothing the host runs
+    # can reach them by default. These mappings punch two holes through, which is how
+    # the Phase 4 load generator (running on the host, replaying the NASA trace) reaches
+    # the app, and how we query Prometheus directly.
+    #
+    # A NodePort Service is cluster-wide: traffic arriving on the control-plane's port
+    # 30080 is forwarded by kube-proxy to app pods on the workers, so mapping only this
+    # one node is sufficient.
+    extraPortMappings:
+      - containerPort: 30080   # target app       -> http://localhost:30080
+        hostPort: 30080
+        protocol: TCP
+      - containerPort: 30090   # Prometheus UI/API -> http://localhost:30090
+        hostPort: 30090
+        protocol: TCP
+  - role: worker
+  - role: worker

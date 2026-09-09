@@ -1,0 +1,15 @@
+{
+  "prophet_reading_a": 2860.3620400026557,
+  "hybrid_lstm": 4969.763920002151,
+  "hybrid_bilstm": 7779.581016002339,
+  "hybrid_gru": 4814.649853004084,
+  "bilstm_1step": 5390.039535999676,
+  "bilstm_5step": 5282.097465002153,
+  "hybrid_lstm_shuffled": 5045.73275000439,
+  "hybrid_bilstm_shuffled": 8185.093763000623,
+  "hybrid_gru_shuffled": 4816.664857000433,
+  "bilstm_1step_shuffled": 5109.937703997275,
+  "bilstm_5step_shuffled": 5248.178842997731,
+  "arima_1step": 49855.24660399824,
+  "arima_5step": 47846.45106399694
+}

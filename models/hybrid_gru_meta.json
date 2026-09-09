@@ -1,0 +1,22 @@
+{
+  "tag": "hybrid_gru",
+  "cell": "gru",
+  "path": "models/hybrid_gru.keras",
+  "look_back": 60,
+  "horizon": 1,
+  "epochs_run": 6,
+  "best_val_loss": 0.0012361753033474088,
+  "final_train_loss": 0.0013799763983115554,
+  "train_seconds": 382.8,
+  "n_train_windows": 62436,
+  "n_params": 23301,
+  "seed": 42,
+  "job": "hybrid_gru",
+  "label": "Prophet+GRU (hybrid)",
+  "source": "residual",
+  "prophet_config": "reading_a",
+  "prophet_predict_ms": 2854.1,
+  "net_predict_ms": 3988.2,
+  "tpt_ms": 6842.3,
+  "threads": 4
+}

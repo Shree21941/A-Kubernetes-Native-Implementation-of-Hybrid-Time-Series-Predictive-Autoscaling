@@ -1,0 +1,145 @@
+segment,arm,metric,n,mean,sd,ci95_halfwidth,ci95_lo,ci95_hi,median
+diurnal,hpa-cpu,p95 latency (ms),5,432.32,288.426,358.071,74.2488,790.391,323.099
+diurnal,hpa-cpu,p99 latency (ms),5,805.731,493.995,613.278,192.453,1419.01,583.574
+diurnal,hpa-cpu,SLO violation %,5,3.16968,3.98256,4.94421,-1.77453,8.11389,0.9556
+diurnal,hpa-cpu,mean replicas,5,3.348,0.861183,1.06913,2.27887,4.41713,2.946
+diurnal,hpa-cpu,CPU-seconds,5,862.291,135.766,168.549,693.743,1030.84,896.139
+diurnal,hpa-cpu,replica-seconds,5,9636.59,2477.92,3076.25,6560.33,12712.8,8481.71
+diurnal,hpa-cpu,scaling actions,5,38,11.1131,13.7965,24.2035,51.7965,34
+diurnal,hpa-cpu,replica churn,5,44,20.5061,25.4576,18.5424,69.4576,35
+diurnal,hpa-cpu,direction reversals,5,28.2,5.76194,7.15325,21.0467,35.3533,29
+diurnal,hpa-cpu,pending-pod seconds,5,32.37,20.3048,25.2077,7.16231,57.5777,23.06
+diurnal,keda-rate,p95 latency (ms),5,213.839,92.5,114.836,99.0035,328.675,219.688
+diurnal,keda-rate,p99 latency (ms),5,381.049,171.264,212.618,168.431,593.666,413.425
+diurnal,keda-rate,SLO violation %,5,0.3291,0.37355,0.463749,-0.134649,0.792849,0.163
+diurnal,keda-rate,mean replicas,5,4.809,0.0297405,0.0369218,4.77208,4.84592,4.816
+diurnal,keda-rate,CPU-seconds,5,795.855,156.621,194.44,601.415,990.294,871.34
+diurnal,keda-rate,replica-seconds,5,13847.9,84.8704,105.364,13742.6,13953.3,13868.8
+diurnal,keda-rate,scaling actions,5,72.8,2.16795,2.69143,70.1086,75.4914,74
+diurnal,keda-rate,replica churn,5,81,4.24264,5.26709,75.7329,86.2671,84
+diurnal,keda-rate,direction reversals,5,47,3.74166,4.64514,42.3549,51.6451,45
+diurnal,keda-rate,pending-pod seconds,5,53.314,3.74395,4.64799,48.666,57.962,54.64
+diurnal,predictive-prophet,p95 latency (ms),5,1957.23,3756.02,4662.96,-2705.73,6620.19,358.988
+diurnal,predictive-prophet,p99 latency (ms),5,3916.46,7652.6,9500.44,-5583.98,13416.9,699.178
+diurnal,predictive-prophet,SLO violation %,5,11.5428,23.6553,29.3672,-17.8245,40.91,1.5662
+diurnal,predictive-prophet,mean replicas,5,2.261,0.0190394,0.0236368,2.23736,2.28464,2.266
+diurnal,predictive-prophet,CPU-seconds,5,803.587,237.612,294.987,508.6,1098.57,888.78
+diurnal,predictive-prophet,replica-seconds,5,6510.91,56.6906,70.3794,6440.53,6581.29,6520.86
+diurnal,predictive-prophet,scaling actions,5,7.8,2.04939,2.54425,5.25575,10.3442,8
+diurnal,predictive-prophet,replica churn,5,15,5.65685,7.02279,7.97721,22.0228,17
+diurnal,predictive-prophet,direction reversals,5,4.2,1.09545,1.35996,2.84004,5.55996,5
+diurnal,predictive-prophet,pending-pod seconds,5,68.37,129.429,160.682,-92.3117,229.052,12.64
+diurnal,predictive-prophet,forecast MAPE %,5,47.8874,4.80748,5.96832,41.9191,53.8557,49.89
+diurnal,predictive-prophet,forecast RMSE,5,35.6741,4.43536,5.50634,30.1678,41.1805,37.7527
+diurnal,predictive-prophet,inference p50 (ms),5,0.0258,0.00356371,0.00442422,0.0213758,0.0302242,0.025
+diurnal,predictive-prophet,inference p95 (ms),5,0.0392,0.01499,0.0186096,0.0205904,0.0578096,0.033
+diurnal,predictive-hybrid,p95 latency (ms),5,240.922,38.5438,47.8508,193.071,288.773,225.257
+diurnal,predictive-hybrid,p99 latency (ms),5,427.135,62.1295,77.1316,350.003,504.266,421.703
+diurnal,predictive-hybrid,SLO violation %,5,0.2353,0.190454,0.236442,-0.00114216,0.471742,0.2255
+diurnal,predictive-hybrid,mean replicas,5,4.2896,0.0582306,0.0722912,4.21731,4.36189,4.299
+diurnal,predictive-hybrid,CPU-seconds,5,902.005,76.2008,94.6007,807.405,996.606,885.833
+diurnal,predictive-hybrid,replica-seconds,5,12352.7,167.363,207.776,12145,12560.5,12379.8
+diurnal,predictive-hybrid,scaling actions,5,18.8,3.63318,4.51047,14.2895,23.3105,19
+diurnal,predictive-hybrid,replica churn,5,29,4.69042,5.82299,23.177,34.823,31
+diurnal,predictive-hybrid,direction reversals,5,11.6,2.19089,2.71991,8.88009,14.3199,12
+diurnal,predictive-hybrid,pending-pod seconds,5,21.414,2.76268,3.42977,17.9842,24.8438,20.99
+diurnal,predictive-hybrid,forecast MAPE %,5,28.312,1.10076,1.36656,26.9454,29.6786,28.133
+diurnal,predictive-hybrid,forecast RMSE,5,18.9797,0.41161,0.511,18.4687,19.4907,18.9268
+diurnal,predictive-hybrid,inference p50 (ms),5,3.5888,0.87417,1.08525,2.50355,4.67405,3.198
+diurnal,predictive-hybrid,inference p95 (ms),5,6.7764,1.5274,1.89622,4.88018,8.67262,6.112
+burst,hpa-cpu,p95 latency (ms),5,205.83,34.791,43.1918,162.638,249.022,207.364
+burst,hpa-cpu,p99 latency (ms),5,392.908,104.032,129.152,263.756,522.06,395.574
+burst,hpa-cpu,SLO violation %,5,0.2937,0.352321,0.437395,-0.143695,0.731095,0.1195
+burst,hpa-cpu,mean replicas,5,2.0092,0.194201,0.241094,1.76811,2.25029,1.906
+burst,hpa-cpu,CPU-seconds,5,212.016,17.3275,21.5115,190.504,233.527,204.637
+burst,hpa-cpu,replica-seconds,5,2168.76,209.521,260.113,1908.65,2428.88,2057.13
+burst,hpa-cpu,scaling actions,5,9.8,4.32435,5.36853,4.43147,15.1685,9
+burst,hpa-cpu,replica churn,5,10,4.69042,5.82299,4.17701,15.823,9
+burst,hpa-cpu,direction reversals,5,7.8,4.32435,5.36853,2.43147,13.1685,7
+burst,hpa-cpu,pending-pod seconds,5,6.298,3.57179,4.43425,1.86375,10.7322,6.3
+burst,keda-rate,p95 latency (ms),5,354.473,474.314,588.844,-234.371,943.316,146.209
+burst,keda-rate,p99 latency (ms),5,580.113,744.609,924.406,-344.292,1504.52,261.007
+burst,keda-rate,SLO violation %,5,3.23902,7.19051,8.92677,-5.68775,12.1658,0
+burst,keda-rate,mean replicas,5,3.2998,0.0900927,0.111847,3.18795,3.41165,3.331
+burst,keda-rate,CPU-seconds,5,250.119,80.0138,99.3343,150.785,349.453,220.008
+burst,keda-rate,replica-seconds,5,3562.81,97.9787,121.637,3441.17,3684.45,3595.25
+burst,keda-rate,scaling actions,5,21.8,3.76829,4.6782,17.1218,26.4782,22
+burst,keda-rate,replica churn,5,22.4,3.28634,4.07987,18.3201,26.4799,23
+burst,keda-rate,direction reversals,5,14.4,1.81659,2.25523,12.1448,16.6552,15
+burst,keda-rate,pending-pod seconds,5,17.8,2.37602,2.94974,14.8503,20.7497,16.84
+burst,predictive-prophet,p95 latency (ms),5,236.969,172.89,214.637,22.3315,451.606,187.167
+burst,predictive-prophet,p99 latency (ms),5,405.343,263.376,326.973,78.3702,732.315,341.846
+burst,predictive-prophet,SLO violation %,5,0.77744,1.65551,2.05526,-1.27782,2.8327,0.0156
+burst,predictive-prophet,mean replicas,5,2.4768,0.312714,0.388224,2.08858,2.86502,2.687
+burst,predictive-prophet,CPU-seconds,5,242.693,75.5753,93.8241,148.869,336.517,229.848
+burst,predictive-prophet,replica-seconds,5,2674.49,337.708,419.253,2255.24,3093.75,2902.81
+burst,predictive-prophet,scaling actions,5,4.4,2.30217,2.85807,1.54193,7.25807,5
+burst,predictive-prophet,replica churn,5,5.6,3.50714,4.35399,1.24601,9.95399,6
+burst,predictive-prophet,direction reversals,5,1.6,1.51658,1.88277,-0.282775,3.48277,2
+burst,predictive-prophet,pending-pod seconds,5,5.268,1.63059,2.02432,3.24368,7.29232,5.25
+burst,predictive-prophet,forecast MAPE %,5,42.3144,1.67446,2.07879,40.2356,44.3932,42.576
+burst,predictive-prophet,forecast RMSE,5,24.1728,0.700947,0.870202,23.3026,25.043,23.9437
+burst,predictive-prophet,inference p50 (ms),5,0.0296,0.00890505,0.0110553,0.0185447,0.0406553,0.027
+burst,predictive-prophet,inference p95 (ms),5,0.046,0.0184932,0.0229587,0.0230413,0.0689587,0.034
+burst,predictive-hybrid,p95 latency (ms),5,141.285,47.5314,59.0086,82.2768,200.294,133.959
+burst,predictive-hybrid,p99 latency (ms),5,240.248,90.1278,111.89,128.358,352.138,259.324
+burst,predictive-hybrid,SLO violation %,5,0.01194,0.0266987,0.0331454,-0.0212054,0.0450854,0
+burst,predictive-hybrid,mean replicas,5,2.9556,0.134286,0.166712,2.78889,3.12231,3.017
+burst,predictive-hybrid,CPU-seconds,5,202.13,11.9674,14.8571,187.273,216.987,201.535
+burst,predictive-hybrid,replica-seconds,5,3191.75,145.592,180.748,3011.01,3372.5,3257.4
+burst,predictive-hybrid,scaling actions,5,8.6,2.88097,3.57663,5.02337,12.1766,9
+burst,predictive-hybrid,replica churn,5,10.8,3.19374,3.96492,6.83508,14.7649,11
+burst,predictive-hybrid,direction reversals,5,4,1.41421,1.7557,2.2443,5.7557,4
+burst,predictive-hybrid,pending-pod seconds,5,9.044,2.38832,2.96502,6.07898,12.009,9.44
+burst,predictive-hybrid,forecast MAPE %,5,36.159,3.11226,3.86376,32.2952,40.0228,36.879
+burst,predictive-hybrid,forecast RMSE,5,16.0974,0.776781,0.964346,15.1331,17.0617,15.909
+burst,predictive-hybrid,inference p50 (ms),5,3.1476,0.112057,0.139115,3.00849,3.28671,3.107
+burst,predictive-hybrid,inference p95 (ms),5,5.9056,0.287744,0.357224,5.54838,6.26282,5.948
+quiet,hpa-cpu,p95 latency (ms),5,5328.14,1721.59,2137.29,3190.85,7465.43,4792.32
+quiet,hpa-cpu,p99 latency (ms),5,12747.2,4325.47,5369.92,7377.29,18117.1,10612.1
+quiet,hpa-cpu,SLO violation %,5,29.5657,8.26088,10.2556,19.3101,39.8213,28.6023
+quiet,hpa-cpu,mean replicas,5,3.1924,0.249231,0.309412,2.88299,3.50181,3.239
+quiet,hpa-cpu,CPU-seconds,5,74.6908,95.5435,118.614,-43.9231,193.305,46.1
+quiet,hpa-cpu,replica-seconds,5,1722.52,135.434,168.137,1554.39,1890.66,1747.95
+quiet,hpa-cpu,scaling actions,5,11.4,3.04959,3.78596,7.61404,15.186,11
+quiet,hpa-cpu,replica churn,5,16.6,4.3359,5.38286,11.2171,21.9829,16
+quiet,hpa-cpu,direction reversals,5,5.8,1.48324,1.84139,3.95861,7.64139,6
+quiet,hpa-cpu,pending-pod seconds,5,31.29,15.1853,18.852,12.438,50.142,25.11
+quiet,keda-rate,p95 latency (ms),5,676.834,518.946,644.254,32.5801,1321.09,497.865
+quiet,keda-rate,p99 latency (ms),5,1722.94,1666.22,2068.55,-345.607,3791.49,843.816
+quiet,keda-rate,SLO violation %,5,5.5789,6.11805,7.59535,-2.01645,13.1743,3.4249
+quiet,keda-rate,mean replicas,5,5.5162,0.168771,0.209523,5.30668,5.72572,5.519
+quiet,keda-rate,CPU-seconds,5,163.627,35.7457,44.377,119.25,208.004,160.144
+quiet,keda-rate,replica-seconds,5,2976.3,90.9183,112.872,2863.43,3089.17,2978.27
+quiet,keda-rate,scaling actions,5,25.4,2.07364,2.57436,22.8256,27.9744,25
+quiet,keda-rate,replica churn,5,30.8,2.86356,3.55501,27.245,34.355,31
+quiet,keda-rate,direction reversals,5,7.2,1.78885,2.2208,4.9792,9.4208,6
+quiet,keda-rate,pending-pod seconds,5,33.438,15.7489,19.5517,13.8863,52.9897,26.27
+quiet,predictive-prophet,p95 latency (ms),5,1199.25,501.671,622.808,576.438,1822.05,1040.73
+quiet,predictive-prophet,p99 latency (ms),5,1979.2,898.04,1114.89,864.312,3094.08,1682.94
+quiet,predictive-prophet,SLO violation %,5,13.7475,4.8204,5.98436,7.76312,19.7318,12.4279
+quiet,predictive-prophet,mean replicas,5,4.2388,0.262131,0.325427,3.91337,4.56423,4.199
+quiet,predictive-prophet,CPU-seconds,5,169.105,40.5161,50.2993,118.806,219.404,171.78
+quiet,predictive-prophet,replica-seconds,5,2288.32,142.459,176.858,2111.46,2465.17,2266.24
+quiet,predictive-prophet,scaling actions,5,11.4,0.547723,0.679978,10.72,12.08,11
+quiet,predictive-prophet,replica churn,5,27,2.44949,3.04096,23.959,30.041,27
+quiet,predictive-prophet,direction reversals,5,5,1.41421,1.7557,3.2443,6.7557,5
+quiet,predictive-prophet,pending-pod seconds,5,24.134,14.1964,17.6244,6.50963,41.7584,17.87
+quiet,predictive-prophet,forecast MAPE %,5,60.7538,1.3768,1.70925,59.0446,62.463,61.131
+quiet,predictive-prophet,forecast RMSE,5,41.7662,0.993761,1.23372,40.5325,42.9999,41.2518
+quiet,predictive-prophet,inference p50 (ms),5,0.0232,0.00327109,0.00406094,0.0191391,0.0272609,0.022
+quiet,predictive-prophet,inference p95 (ms),5,0.0348,0.00311448,0.00386652,0.0309335,0.0386665,0.034
+quiet,predictive-hybrid,p95 latency (ms),5,1966.49,1498.42,1860.23,106.259,3826.73,2026.29
+quiet,predictive-hybrid,p99 latency (ms),5,3454.64,2605.83,3235.05,219.588,6689.69,3536.62
+quiet,predictive-hybrid,SLO violation %,5,16.315,12.0161,14.9175,1.39744,31.2325,12.767
+quiet,predictive-hybrid,mean replicas,5,5.165,0.284291,0.352938,4.81206,5.51794,5.165
+quiet,predictive-hybrid,CPU-seconds,5,113.469,86.7741,107.727,5.74161,221.196,118.122
+quiet,predictive-hybrid,replica-seconds,5,2787.04,153.765,190.894,2596.15,2977.94,2786.31
+quiet,predictive-hybrid,scaling actions,5,13.8,2.16795,2.69143,11.1086,16.4914,15
+quiet,predictive-hybrid,replica churn,5,32.2,1.78885,2.2208,29.9792,34.4208,31
+quiet,predictive-hybrid,direction reversals,5,7,1.41421,1.7557,5.2443,8.7557,8
+quiet,predictive-hybrid,pending-pod seconds,5,59.28,38.224,47.4537,11.8263,106.734,58.78
+quiet,predictive-hybrid,forecast MAPE %,5,30.7324,7.93628,9.85262,20.8798,40.585,29.465
+quiet,predictive-hybrid,forecast RMSE,5,18.7547,2.85473,3.54405,15.2106,22.2987,18.9221
+quiet,predictive-hybrid,inference p50 (ms),5,3.77,0.949752,1.17908,2.59092,4.94908,3.332
+quiet,predictive-hybrid,inference p95 (ms),5,6.4886,2.87994,3.57535,2.91325,10.0639,5.267

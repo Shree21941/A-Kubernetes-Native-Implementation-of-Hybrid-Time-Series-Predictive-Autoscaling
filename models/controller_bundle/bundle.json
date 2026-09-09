@@ -1,0 +1,26 @@
+{
+  "job": "hybrid_lstm_shuffled",
+  "label": "Prophet+LSTM (hybrid)",
+  "cell": "lstm",
+  "look_back": 60,
+  "horizon": 1,
+  "prophet_config": "reading_a",
+  "resid_scaler": {
+    "data_min": -118.21865640019976,
+    "data_max": 282.95667645239706,
+    "note": "MinMaxScaler(0,1) fit on TRAIN residuals only"
+  },
+  "train_test_cut_index": 62496,
+  "test_starts": "1995-08-13 09:36:00",
+  "table_covers": [
+    "1995-08-13 09:36:00",
+    "1995-08-31 23:59:00"
+  ],
+  "seed": 42,
+  "phase2_tpt_ms": 8187.2,
+  "phase2_prophet_predict_ms": 2854.1,
+  "source_artifacts": {
+    "net": "models/hybrid_lstm_shuffled.keras",
+    "prophet": "models/prophet_reading_a.json"
+  }
+}

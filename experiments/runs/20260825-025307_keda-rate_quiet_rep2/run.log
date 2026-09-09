@@ -1,0 +1,33 @@
+switching to arm keda-rate
+
+Switching to arm: keda-rate
+  tearing down every arm (unconditionally)
+  confirmed: no arms attached
+[31m  WARNING: traffic still arriving at 10.176227464418126 req/s - a load generator may still[0m
+[31m           be running. Starting a run now would contaminate it.[0m
+  reset: scaling target-app to 1 and waiting for it to settle
+[32m  reset complete: 1/1 ready, 1 pod(s) total[0m
+  applied k8s/arm-keda-rate.yaml
+
+[32mOK - exactly one arm active: scaledobject:arm-keda-rate[0m
+replaying quiet (90 trace-min, ~9 min wall)
+segment            : quiet  (3e6d2400afde10f5)
+trace window       : 1995-08-31 15:50:00 -> 1995-08-31 17:19:00
+trace minutes      : 90
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 5,950
+planned wall time  : 540 s (9.0 min)
+mean / peak rate   : 11.0 / 22.8 req/s
+target             : http://localhost:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 7.3x one pod (needs 8 pods)   mean 3.5x (needs 4)
+
+replaying -> experiments/20260825-025319-quiet-keda-rate-rep2/ ...
+
+  wall time        : 540.0 s (planned 540 s)
+  sent / ok / err  : 5,950 / 5,950 / 0
+  latency ms       : mean 62.49  p50 33.51  p90 134.19  p95 196.26  p99 326.61  max 682.5
+  shape corr       : 0.9788  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260825-025319-quiet-keda-rate-rep2/summary.json and raw/requests.csv

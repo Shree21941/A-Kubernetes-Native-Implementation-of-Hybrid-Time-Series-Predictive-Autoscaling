@@ -1,0 +1,32 @@
+switching to arm hpa-cpu
+
+Switching to arm: hpa-cpu
+  tearing down every arm (unconditionally)
+  confirmed: no arms attached
+  traffic quiet (0 req/s)
+  reset: scaling target-app to 1 and waiting for it to settle
+[32m  reset complete: 1/1 ready, 1 pod(s) total[0m
+  applied k8s/arm-hpa-cpu.yaml
+
+[32mOK - exactly one arm active: hpa:arm-hpa-cpu[0m
+replaying diurnal (480 trace-min, ~48 min wall)
+segment            : diurnal  (a5f02dd376875aac)
+trace window       : 1995-08-28 10:00:00 -> 1995-08-28 17:59:00
+trace minutes      : 480
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 28,860
+planned wall time  : 2,880 s (48.0 min)
+mean / peak rate   : 10.0 / 19.7 req/s
+target             : http://localhost:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 6.3x one pod (needs 7 pods)   mean 3.2x (needs 4)
+
+replaying -> experiments/20260826-010033-diurnal-hpa-cpu-rep2/ ...
+
+  wall time        : 2,879.9 s (planned 2,880 s)
+  sent / ok / err  : 28,860 / 28,860 / 0
+  latency ms       : mean 134.09  p50 49.09  p90 325.18  p95 551.33  p99 1106.51  max 2222.89
+  shape corr       : 0.9265  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260826-010033-diurnal-hpa-cpu-rep2/summary.json and raw/requests.csv

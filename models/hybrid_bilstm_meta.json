@@ -1,0 +1,22 @@
+{
+  "tag": "hybrid_bilstm",
+  "cell": "bilstm",
+  "path": "models/hybrid_bilstm.keras",
+  "look_back": 60,
+  "horizon": 1,
+  "epochs_run": 14,
+  "best_val_loss": 0.001225462299771607,
+  "final_train_loss": 0.0012692074524238706,
+  "train_seconds": 931.9,
+  "n_train_windows": 62436,
+  "n_params": 81301,
+  "seed": 42,
+  "job": "hybrid_bilstm",
+  "label": "Prophet+BiLSTM (hybrid)",
+  "source": "residual",
+  "prophet_config": "reading_a",
+  "prophet_predict_ms": 2854.1,
+  "net_predict_ms": 2405.6,
+  "tpt_ms": 5259.7,
+  "threads": 4
+}

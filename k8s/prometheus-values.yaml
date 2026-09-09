@@ -1,0 +1,74 @@
+# Helm values for kube-prometheus-stack, trimmed for a 12-CPU / 15 GB laptop that is
+# also running a 3-node cluster and a load generator.
+#
+# What is switched off and why - each of these is a deliberate cost decision, not an
+# oversight, and each is reversible with a one-line change:
+#   grafana       - dashboards are a convenience; Phase 7 reads Prometheus through its
+#                   HTTP API and plots with matplotlib, so Grafana would cost ~300 MB of
+#                   image and a running pod for nothing this project consumes.
+#   alertmanager  - there is nobody to alert. Pure overhead here.
+#   node-exporter - host-level metrics for Docker-in-Docker nodes describe the laptop,
+#                   not the "nodes", so the numbers would be misleading as well as
+#                   expensive.
+#
+# Kept: the Prometheus Operator, Prometheus itself, and kube-state-metrics (which is
+# what reports replica counts - Phase 7 needs `kube_deployment_status_replicas` to plot
+# what the autoscaler actually did).
+
+grafana:
+  enabled: false
+alertmanager:
+  enabled: false
+nodeExporter:
+  enabled: false
+
+kubeStateMetrics:
+  enabled: true
+
+prometheus:
+  service:
+    # Exposed on the host through kind-config.yaml's extraPortMapping, so Phase 7 can
+    # query the API from a plain Python script without kubectl port-forward - a
+    # port-forward that dies mid-experiment would lose data silently.
+    type: NodePort
+    nodePort: 30090
+  prometheusSpec:
+    # THE setting that matters most in this file. By default the operator only adopts
+    # ServiceMonitors carrying the Helm release label, so a ServiceMonitor with a
+    # slightly wrong label is ignored - and the failure mode is silence, not an error.
+    # Setting these to false makes Prometheus adopt every ServiceMonitor and PodMonitor
+    # in the cluster, which for a single-purpose testbed removes an entire class of
+    # "why is there no data" debugging.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
+    # 1.5s, which is 15s divided by the compression factor C=10 (D-010, D-014).
+    #
+    # The scrape interval is part of the compressed clock. At C=10 the control loop
+    # decides every 6 wall-seconds, so a 15s scrape cannot supply even one sample per
+    # decision and rate() over the controller's window returns empty. Compressing the
+    # scrape restores four samples per decision, matching the real-time design.
+    #
+    # Cost check: ~10 app pods plus kube-state-metrics at 1.5s is roughly 7 scrapes/s
+    # of a few dozen series each - trivial for Prometheus, and retention is only 2 days.
+    # The reason this is affordable is that we deliberately disabled node-exporter,
+    # Grafana and Alertmanager; a default kube-prometheus-stack at 1.5s would not be.
+    scrapeInterval: 1500ms
+    evaluationInterval: 1500ms
+
+    # Experiments run for tens of minutes; two days of retention is generous and keeps
+    # the on-disk footprint small on a 92%-full disk.
+    retention: 2d
+
+    # emptyDir rather than a PersistentVolume: KIND's default storage class provisions
+    # host-path volumes that survive `kind delete cluster` and accumulate. Experiment
+    # data is exported to results/ by Phase 7 anyway, so durability across cluster
+    # rebuilds buys nothing.
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 1536Mi

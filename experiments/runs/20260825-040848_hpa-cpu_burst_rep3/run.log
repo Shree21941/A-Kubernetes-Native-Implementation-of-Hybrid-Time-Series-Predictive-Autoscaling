@@ -1,0 +1,33 @@
+switching to arm hpa-cpu
+
+Switching to arm: hpa-cpu
+  tearing down every arm (unconditionally)
+  confirmed: no arms attached
+[31m  WARNING: traffic still arriving at 5.574112866984627 req/s - a load generator may still[0m
+[31m           be running. Starting a run now would contaminate it.[0m
+  reset: scaling target-app to 1 and waiting for it to settle
+[32m  reset complete: 1/1 ready, 1 pod(s) total[0m
+  applied k8s/arm-hpa-cpu.yaml
+
+[32mOK - exactly one arm active: hpa:arm-hpa-cpu[0m
+replaying burst (180 trace-min, ~18 min wall)
+segment            : burst  (e9b24f8b9fe9023b)
+trace window       : 1995-08-24 06:52:00 -> 1995-08-24 09:51:00
+trace minutes      : 180
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 6,647
+planned wall time  : 1,080 s (18.0 min)
+mean / peak rate   : 6.2 / 14.2 req/s
+target             : http://localhost:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 4.5x one pod (needs 5 pods)   mean 2.0x (needs 2)
+
+replaying -> experiments/20260825-040900-burst-hpa-cpu-rep3/ ...
+
+  wall time        : 1,080.0 s (planned 1,080 s)
+  sent / ok / err  : 6,647 / 6,647 / 0
+  latency ms       : mean 76.81  p50 35.02  p90 163.12  p95 247.98  p99 560.71  max 1189.54
+  shape corr       : 0.9562  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260825-040900-burst-hpa-cpu-rep3/summary.json and raw/requests.csv

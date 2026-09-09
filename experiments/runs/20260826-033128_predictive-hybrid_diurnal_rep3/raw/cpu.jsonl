@@ -1,0 +1,2 @@
+{"ts": 1787695301.8028638, "per_pod": {"target-app-57f4dcf586-56862": 792.478364, "target-app-57f4dcf586-t29lg": 42.902067, "target-app-57f4dcf586-6m74q": 66.165243}, "cpu_seconds_total_UNSAFE_SUM": 901.5456740000001}
+{"ts": 1787698181.8843794, "per_pod": {"target-app-57f4dcf586-6m74q": 751.56371, "target-app-57f4dcf586-s6s2r": 197.538641, "target-app-57f4dcf586-vdqj8": 2.436546, "target-app-57f4dcf586-nwpq9": 0.459616}, "cpu_seconds_total_UNSAFE_SUM": 951.998513}

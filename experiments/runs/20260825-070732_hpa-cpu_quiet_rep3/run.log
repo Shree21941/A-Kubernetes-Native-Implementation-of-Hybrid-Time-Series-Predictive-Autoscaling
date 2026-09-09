@@ -1,0 +1,34 @@
+switching to arm hpa-cpu
+
+Switching to arm: hpa-cpu
+  tearing down every arm (unconditionally)
+  confirmed: no arms attached
+[31m  WARNING: traffic still arriving at 5.691440054143004 req/s - a load generator may still[0m
+[31m           be running. Starting a run now would contaminate it.[0m
+  reset: scaling target-app to 1 and waiting for it to settle
+[32m  reset complete: 1/1 ready, 1 pod(s) total[0m
+  applied k8s/arm-hpa-cpu.yaml
+
+[32mOK - exactly one arm active: hpa:arm-hpa-cpu[0m
+replaying quiet (90 trace-min, ~9 min wall)
+segment            : quiet  (3e6d2400afde10f5)
+trace window       : 1995-08-31 15:50:00 -> 1995-08-31 17:19:00
+trace minutes      : 90
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 6,017
+planned wall time  : 540 s (9.0 min)
+mean / peak rate   : 11.1 / 22.8 req/s
+target             : http://localhost:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 7.3x one pod (needs 8 pods)   mean 3.6x (needs 4)
+
+replaying -> experiments/20260825-070745-quiet-hpa-cpu-rep3/ ...
+
+  wall time        : 539.9 s (planned 540 s)
+  sent / ok / err  : 6,017 / 5,901 / 116
+  errors           : {'ClientPayloadError': 1, 'ServerDisconnectedError': 8, 'TimeoutError': 107}
+  latency ms       : mean 833.61  p50 120.22  p90 2349.14  p95 3627.87  p99 10612.12  max 29672.14
+  shape corr       : 0.9756  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260825-070745-quiet-hpa-cpu-rep3/summary.json and raw/requests.csv

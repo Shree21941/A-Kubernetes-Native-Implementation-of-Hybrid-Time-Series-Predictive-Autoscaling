@@ -1,0 +1,33 @@
+switching to arm keda-rate
+
+Switching to arm: keda-rate
+  tearing down every arm (unconditionally)
+  confirmed: no arms attached
+[31m  WARNING: traffic still arriving at 5.54328373453537 req/s - a load generator may still[0m
+[31m           be running. Starting a run now would contaminate it.[0m
+  reset: scaling target-app to 1 and waiting for it to settle
+[32m  reset complete: 1/1 ready, 1 pod(s) total[0m
+  applied k8s/arm-keda-rate.yaml
+
+[32mOK - exactly one arm active: scaledobject:arm-keda-rate[0m
+replaying diurnal (480 trace-min, ~48 min wall)
+segment            : diurnal  (a5f02dd376875aac)
+trace window       : 1995-08-28 10:00:00 -> 1995-08-28 17:59:00
+trace minutes      : 480
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 28,831
+planned wall time  : 2,880 s (48.0 min)
+mean / peak rate   : 10.0 / 19.7 req/s
+target             : http://localhost:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 6.3x one pod (needs 7 pods)   mean 3.2x (needs 4)
+
+replaying -> experiments/20260826-054436-diurnal-keda-rate-rep5/ ...
+
+  wall time        : 2,880.1 s (planned 2,880 s)
+  sent / ok / err  : 28,831 / 28,831 / 0
+  latency ms       : mean 67.47  p50 33.28  p90 142.82  p95 219.69  p99 413.53  max 886.28
+  shape corr       : 0.9220  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260826-054436-diurnal-keda-rate-rep5/summary.json and raw/requests.csv

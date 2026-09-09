@@ -1,0 +1,33 @@
+switching to arm predictive-prophet
+
+Switching to arm: predictive-prophet
+  tearing down every arm (unconditionally)
+  confirmed: no arms attached
+  traffic quiet (0 req/s)
+  reset: scaling target-app to 1 and waiting for it to settle
+[32m  reset complete: 1/1 ready, 1 pod(s) total[0m
+  predictive-autoscaler running with FORECASTER=prophet
+
+[32mOK - exactly one arm active: controller:predictive-autoscaler(1)[0m
+replaying diurnal (480 trace-min, ~48 min wall)
+segment            : diurnal  (a5f02dd376875aac)
+trace window       : 1995-08-28 10:00:00 -> 1995-08-28 17:59:00
+trace minutes      : 480
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 28,831
+planned wall time  : 2,880 s (48.0 min)
+mean / peak rate   : 10.0 / 19.7 req/s
+target             : http://localhost:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 6.3x one pod (needs 7 pods)   mean 3.2x (needs 4)
+
+replaying -> experiments/20260824-194212-diurnal-predictive-prophet-rep5/ ...
+
+  wall time        : 2,880.1 s (planned 2,880 s)
+  sent / ok / err  : 28,831 / 28,831 / 0
+  latency ms       : mean 113.04  p50 43.1  p90 295.49  p95 441.21  p99 741.79  max 1349.99
+  shape corr       : 0.9220  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260824-194212-diurnal-predictive-prophet-rep5/summary.json and raw/requests.csv
+tar: Removing leading `/' from member names

@@ -1,0 +1,100 @@
+# Phase 6, ARM 2 - KEDA scaling on request rate. The FAIR reactive comparison.
+#
+# This arm matters more than the CPU one. It scales on the SAME SIGNAL as our predictive
+# controller - requests per second from Prometheus - and divides by the SAME measured
+# per-pod capacity. So the only thing left differing between this arm and ours is
+# TIMING: KEDA reacts to the rate that has already arrived, we act on the rate forecast
+# for the next trace-minute.
+#
+# That is the comparison the whole project rests on. Most predictive-autoscaling papers
+# compare only against CPU-based HPA, which conflates two separate advantages - a better
+# signal and a better time reference - and credits both to prediction. Including this arm
+# isolates prediction as the only variable.
+#
+# --------------------------------------------------------------------------------
+# The AverageValue division (CLAUDE.md 3, and the reason this file has a long comment)
+# --------------------------------------------------------------------------------
+# KEDA does not scale anything itself; it publishes an external metric and creates an
+# HPA that consumes it. So KEDA's threshold is interpreted by HPA's algorithm, and HPA
+# treats external metrics differently depending on the target type:
+#
+#   type: Value          desired = ceil( currentReplicas * metricValue / threshold )
+#   type: AverageValue   desired = ceil( metricValue / threshold )
+#
+# Our planner computes:
+#
+#   desired = ceil( request_rate / PER_POD_CAPACITY )
+#
+# which is the AverageValue form exactly. With `Value`, the same threshold would be
+# multiplied by the current replica count - so at 4 replicas the arm would ask for 4x
+# the pods it needs, then 16x, and run away to maxReplicas on the first busy minute.
+# It would look like a wildly over-aggressive autoscaler rather than a units bug, and
+# it would make our arm look excellent by comparison.
+#
+# metricType is therefore stated EXPLICITLY below rather than left to KEDA's default,
+# and experiments/verify_arms.py asserts it, because this is a silent-wrongness bug:
+# nothing errors, the numbers are just wrong by a factor that changes every cycle.
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: arm-keda-rate
+  namespace: aiops
+  labels:
+    aiops.arm: "keda-rate"
+spec:
+  scaleTargetRef:
+    name: target-app              # Deployment, KEDA's default kind
+
+  # IDENTICAL to every other arm. Note minReplicaCount, not minReplicas - and note that
+  # KEDA's default is 0, which would let this arm scale to zero while no other arm can.
+  # An arm that can reach zero has a structural cost advantage that has nothing to do
+  # with its scaling logic.
+  minReplicaCount: 1
+  maxReplicaCount: 10
+
+  # Compressed clock (D-010). Defaults are 30s polling / 300s cooldown in real time;
+  # 300 real seconds is 50 trace-minutes, longer than the entire burst segment.
+  pollingInterval: 3              # 30s / C
+  cooldownPeriod: 30              # 300s / C
+
+  triggers:
+    - type: prometheus
+      # Explicit, not defaulted. See the long comment above.
+      metricType: AverageValue
+      metadata:
+        serverAddress: http://prometheus-operated.monitoring.svc:9090
+        metricName: http_requests_per_second
+        # The SAME query the predictive controller's Monitor stage issues, over the same
+        # 6s window (= 1 trace-minute at C=10). At the compressed 1.5s scrape interval
+        # (D-014) this window holds 4 samples, which is the minimum for a meaningful
+        # rate(). At the original 15s scrape it would have returned empty and this arm
+        # would have sat at minReplicas for the entire experiment.
+        query: sum(rate(http_requests_total{namespace="aiops"}[6s]))
+        # PER_POD_CAPACITY, measured in Phase 4 (D-012), in requests per WALL second -
+        # the same units the query returns and the same number the predictive planner
+        # divides by. If this and src/controller/config.py ever disagree, the arms differ
+        # in their capacity assumption rather than in their timing, and the comparison is
+        # void. verify_arms.py checks they match.
+        threshold: "3.135"
+
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        # Identical to arm-hpa-cpu.yaml. Both reactive arms must be equally willing to
+        # add and equally reluctant to remove capacity, so that any difference between
+        # them is attributable to the SIGNAL (CPU vs request rate) and nothing else.
+        scaleUp:
+          stabilizationWindowSeconds: 0
+          policies:
+            - type: Pods
+              value: 4
+              periodSeconds: 6
+          selectPolicy: Max
+        scaleDown:
+          stabilizationWindowSeconds: 30
+          policies:
+            - type: Pods
+              value: 2
+              periodSeconds: 30
+          selectPolicy: Min

@@ -1,0 +1,2 @@
+{"ts": 1787612233.772264, "per_pod": {"target-app-57f4dcf586-64xhw": 902.372412}, "cpu_seconds_total_UNSAFE_SUM": 902.372412}
+{"ts": 1787613313.9307373, "per_pod": {"target-app-57f4dcf586-64xhw": 1076.882858, "target-app-57f4dcf586-jtbw9": 30.203984, "target-app-57f4dcf586-8pdg5": 0.697591, "target-app-57f4dcf586-qhlgw": 0.524046}, "cpu_seconds_total_UNSAFE_SUM": 1108.308479}
