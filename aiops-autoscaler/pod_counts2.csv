@@ -1,0 +1,7 @@
+timestamp,deployment,ready_replicas
+2026-09-09T20:27:55.720952+00:00,frontend,4
+2026-09-09T20:27:55.720952+00:00,recommendationservice,2
+2026-09-09T20:27:55.720952+00:00,currencyservice,3
+2026-09-09T20:27:55.720952+00:00,cartservice,1
+2026-09-09T20:27:55.720952+00:00,checkoutservice,1
+2026-09-09T20:27:55.720952+00:00,productcatalogservice,1

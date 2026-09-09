@@ -1,0 +1,100 @@
+#Installing Kubernetes - Kubectl
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+#Installing KIND
+
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.23.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
+
+#increasing the inotify limits
+
+sudo sysctl fs.inotify.max_user_watches=524288
+sudo sysctl fs.inotify.max_user_instances=512
+echo "fs.inotify.max_user_watches = 524288" | sudo tee -a /etc/sysctl.conf
+echo "fs.inotify.max_user_instances = 512" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+
+#Setting-up the config file in the project directory:
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
+  - role: worker
+
+#creating the cluster
+
+kind create cluster --name aiops-cluster --config kind-config.yaml
+
+#Checking if the cluster is setup
+
+kubectl get nodes
+
+#Testing
+
+kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/microservices-demo/main/release/kubernetes-manifests.yaml
+
+#Watch the status of this
+kubectl get pods --watch
+
+(Wait u till u see all the pods in READY status)
+
+# Verify the app (testing wala)
+
+kubectl port-forward svc/frontend 8080:80
+
+YAYYY !!!
+
+#Helm install karo i.e. package manager of Kubernetes and also check the version
+
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+helm version
+
+#Adding prometheus and Grafana repos
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+
+#Install them
+
+helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+
+#verify kara 
+
+kubectl get pods -n monitoring
+
+#testing the load generation (sample app that was made)
+
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+
+#then grafana khulne ke bad naya terminal pe jake ye command dalo
+
+kubectl get secret -n monitoring prometheus-grafana -o jsonpath="{.data.admin-password}" | base64 --decode
+echo
+
+#ha jo password generate karel to use hoil login la, jithe username is admin
+
+#8080 pe frontend chalu kara
+
+ @shreesh-kolhatkar  kubectl port-forward svc/frontend 8080:80
+ 
+# prometheus on 9090
+
+ @shreesh-kolhatkar  kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090:9090
+ 
+ # k6 install kara
+ 
+ sudo gpg -k
+sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+sudo apt-get update
+sudo apt-get install k6
+
+#ye run karo in case of error
+
+sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
