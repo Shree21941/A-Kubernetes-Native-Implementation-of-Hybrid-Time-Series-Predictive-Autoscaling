@@ -156,14 +156,43 @@ def test_cooldown() -> None:
 
     # The cooldown must never be shorter than pod startup, or the controller decides
     # against a cluster that has not yet responded to its last decision.
-    slow = base_cfg(pod_cold_start_wall_s=45.0)
+    slow = base_cfg(pod_cold_start_wall_s=45.0,
+                    pod_cold_start_p95_wall_s=45.0)
     check("scale-up cooldown respects the physical pod-start floor",
           slow.scale_up_cooldown_wall_s >= 45.0,
           f"cooldown={slow.scale_up_cooldown_wall_s}s")
-    fast = base_cfg(pod_cold_start_wall_s=0.5)
+    fast = base_cfg(pod_cold_start_wall_s=0.5,
+                    pod_cold_start_p95_wall_s=0.5)
     check("scale-up cooldown is the compressed interval when startup is fast",
           math.isclose(fast.scale_up_cooldown_wall_s, 6.0),
           f"cooldown={fast.scale_up_cooldown_wall_s}s")
+
+
+def test_readiness_horizon_and_pending_scale_down() -> None:
+    cfg = base_cfg(readiness_aware=True, pod_cold_start_p95_wall_s=15.0,
+                   forecast_overhead_wall_s=0.01,
+                   max_forecast_horizon_trace_min=5)
+    check("readiness horizon covers startup lead",
+          cfg.required_readiness_horizon_steps == 3
+          and cfg.forecast_horizon_steps == 3,
+          f"required={cfg.required_readiness_horizon_steps} "
+          f"used={cfg.forecast_horizon_steps}")
+
+    capped = base_cfg(readiness_aware=True, pod_cold_start_p95_wall_s=45.0,
+                      max_forecast_horizon_trace_min=5)
+    check("long startup reports uncovered readiness lead",
+          capped.required_readiness_horizon_steps == 8
+          and capped.forecast_horizon_steps == 5
+          and capped.readiness_horizon_shortfall_wall_s > 0,
+          f"required={capped.required_readiness_horizon_steps} "
+          f"used={capped.forecast_horizon_steps} "
+          f"shortfall={capped.readiness_horizon_shortfall_wall_s:.1f}s")
+
+    pending = Planner(base_cfg())
+    d = pending.plan(0.0, current=4, ready_replicas=2, now=1000.0)
+    check("scale-down waits for requested replicas to become Ready",
+          d.action is Action.HOLD_PENDING and d.target == 4,
+          f"action={d.action.value} target={d.target}")
 
 
 # ---------------------------------------------------------------------------------
@@ -266,6 +295,7 @@ def test_no_flapping_quiet() -> None:
 
 def main() -> int:
     for fn in (test_formula, test_equations, test_deadband, test_cooldown,
+               test_readiness_horizon_and_pending_scale_down,
                test_asymmetry, test_warmup, test_no_flapping_quiet):
         fn()
 

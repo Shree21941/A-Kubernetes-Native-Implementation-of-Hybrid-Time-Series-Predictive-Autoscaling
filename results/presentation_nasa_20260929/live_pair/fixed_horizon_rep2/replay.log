@@ -1,0 +1,24 @@
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+
+[notice] A new release of pip is available: 24.0 -> 26.2.1
+[notice] To update, run: pip install --upgrade pip
+segment            : burst  (e9b24f8b9fe9023b)
+trace window       : 1995-08-24 06:52:00 -> 1995-08-24 09:51:00
+trace minutes      : 180
+compression        : 10x  (1 trace-minute = 6 wall-seconds)
+magnitude          : 1x
+planned requests   : 6,541
+planned wall time  : 1,080 s (18.0 min)
+mean / peak rate   : 6.1 / 14.2 req/s
+target             : http://172.18.0.2:30080/
+per-pod capacity   : 3.13 req/s  (phase4_capacity.json)
+saturation         : peak 4.5x one pod (needs 5 pods)   mean 1.9x (needs 2)
+
+replaying -> experiments/20260929-071748-burst-coldstart-fixed_horizon-r2/ ...
+
+  wall time        : 1,080.5 s (planned 1,080 s)
+  sent / ok / err  : 6,541 / 6,541 / 0
+  latency ms       : mean 1360.15  p50 510.33  p90 4077.64  p95 5248.51  p99 6990.85  max 12838.24
+  shape corr       : 0.9603  (achieved vs trace, per trace-minute)
+
+wrote experiments/20260929-071748-burst-coldstart-fixed_horizon-r2/summary.json and raw/requests.csv

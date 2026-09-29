@@ -236,3 +236,39 @@ class Forecaster:
             value=max(value, 0.0), prophet_term=yhat_target, residual_term=resid_hat,
             net_ms=net_ms, prophet_ms=p_ms, total_ms=p_ms + net_ms, clamped=clamped,
         )
+
+    def predict_horizon(self, window: np.ndarray, window_ts: np.ndarray,
+                        first_target_ts: np.datetime64, steps: int) -> Forecast:
+        """Recursively forecast `steps` trace-minutes and return the final step.
+
+        Recursive use is for matching the lead time to measured pod readiness when the
+        packaged network only has a one-step output. The caller must keep `steps`
+        bounded and report the horizon because forecast error compounds at each step.
+        """
+        if steps < 1:
+            raise ValueError(f"steps must be >= 1, got {steps}")
+
+        values = np.asarray(window, dtype="float64").copy()
+        timestamps = np.asarray(window_ts, dtype="datetime64[m]").copy()
+        total_net_ms = total_prophet_ms = 0.0
+        any_clamped = False
+        result = None
+
+        for offset in range(steps):
+            target_ts = first_target_ts + np.timedelta64(offset, "m")
+            result = self.predict(values, timestamps, target_ts)
+            total_net_ms += result.net_ms
+            total_prophet_ms += result.prophet_ms
+            any_clamped = any_clamped or result.clamped
+            values = np.concatenate([values[1:], [result.value]])
+            timestamps = np.concatenate([timestamps[1:], [target_ts]])
+
+        return Forecast(
+            value=result.value,
+            prophet_term=result.prophet_term,
+            residual_term=result.residual_term,
+            net_ms=total_net_ms,
+            prophet_ms=total_prophet_ms,
+            total_ms=total_net_ms + total_prophet_ms,
+            clamped=any_clamped,
+        )

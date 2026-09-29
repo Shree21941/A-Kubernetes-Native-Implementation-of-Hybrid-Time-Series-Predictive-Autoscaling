@@ -120,6 +120,11 @@ spec:
             # guess cannot quietly become a result.
             - {name: POD_COLD_START_WALL_S, value: "2.7"}
             - {name: POD_COLD_START_MEASURED, value: "1"}
+            # p95 interpolated from the five recorded 1->5 scale-out trials. Re-measure
+            # with more repetitions before treating this tail estimate as publication-grade.
+            - {name: POD_COLD_START_P95_WALL_S, value: "2.8662"}
+            - {name: READINESS_AWARE_SCALING, value: "1"}
+            - {name: MAX_FORECAST_HORIZON_TRACE_MIN, value: "5"}
             # Which predictive ARM this controller is currently acting as. Patched by
             # experiments/switch_arm.sh rather than set per-Deployment, so the two
             # predictive arms are guaranteed to share every other line of code - and so

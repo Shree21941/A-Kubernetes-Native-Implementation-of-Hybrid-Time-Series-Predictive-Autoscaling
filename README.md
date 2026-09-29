@@ -1,5 +1,10 @@
 # Bi-LSTM Autoscaling — Reproduction
 
+The paper baseline plus the live KIND cold-start-aware optimization are documented in
+[COLD_START_OPTIMIZATION.md](COLD_START_OPTIMIZATION.md). The live controller keeps the
+forecast model fixed while comparing a fixed one-step policy with a readiness-derived
+recursive forecast horizon.
+
 A runnable reproduction of the prediction-model experiments in:
 
 > **Dang-Quang, N.-M.; Yoo, M.** *Deep Learning-Based Autoscaling Using
@@ -50,8 +55,8 @@ bilstm-autoscaling/
 │   ├── nasa_invocation_count.csv   # NASA per-minute counts (Jul+Aug 1995)
 │   └── wc98_invocation_count.csv   # World Cup 98 per-minute counts
 ├── src/
-│   ├── data.py               # load / split / scale / window; raw-log aggregation
-│   ├── models.py             # Bi-LSTM, LSTM (Keras) + ARIMA(4,1,0) fast walk-forward
+│   ├── data/                 # loading / split / scaling / windows; raw-log aggregation
+│   ├── models/               # paper Bi-LSTM, LSTM and ARIMA implementations
 │   ├── metrics.py            # MSE/RMSE/MAE/R² (Eq 6-9) + SPEC elasticity (Eq 10-14)
 │   ├── autoscaler.py         # Algorithm 1: CDT + Resource Removal Strategy
 │   └── plots.py              # figure helpers
@@ -61,6 +66,12 @@ bilstm-autoscaling/
 The two `*_invocation_count.csv` files are the datasets already preprocessed
 into the paper's form (all requests within the same minute aggregated into one
 count; `period,count`). They are ready to run as-is.
+
+The attached NASA July/August 1995 archives are stored in `data/raw/`. The parser
+verified 3,461,612 requests, with the single truncated July record excluded as expected.
+The model loader expands the sparse per-minute CSV into a continuous 89,280-minute
+series and inserts zero counts for minutes with no requests, matching the processed
+NASA CSV and preserving the complete time axis for forecasting.
 
 ---
 

@@ -6,6 +6,7 @@
   "capacity_bracketed": true,
   "capacity_measured_against": "http://localhost:30080/",
   "pod_cold_start_wall_s": 2.7,
+  "pod_cold_start_p95_wall_s": 2.8662,
   "pod_cold_start_median_s": 2.673,
   "pod_cold_start_sd_s": 0.128,
   "pod_first_ready_wall_s": 2.105,

@@ -202,7 +202,11 @@ def main() -> int:
     print(f"  requests counted      : {counted_total:,}  "
           f"({counted_total / documented_total:.4%} of documented)")
     print()
-    print(f"  output                : {args.out.relative_to(REPO)}")
+    try:
+        output_label = args.out.resolve().relative_to(REPO)
+    except ValueError:
+        output_label = args.out.resolve()
+    print(f"  output                : {output_label}")
     print(f"  rows (minutes)        : {len(series):,}")
     print(f"  date range            : {series.index[0]}  ->  {series.index[-1]}")
     print(f"  span                  : {(end - start).days} days "

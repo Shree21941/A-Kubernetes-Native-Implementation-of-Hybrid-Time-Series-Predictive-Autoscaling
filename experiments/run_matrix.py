@@ -239,6 +239,11 @@ def one_run(arm: str, seg: str, rep: int, args) -> tuple[bool, str, Path]:
         # 1. Switch arm. This tears down EVERY arm, resets to baseline, and asserts
         #    exactly one is active afterwards - the Phase 6 reset protocol.
         say(f"switching to arm {arm}")
+        if arm.startswith("predictive"):
+            trace_start = seg_meta["first_minute"]
+            sh(["kubectl", "set", "env", f"deploy/{'predictive-autoscaler'}",
+                "-n", NS, f"TRACE_START={trace_start}"])
+            say(f"controller trace clock aligned to {trace_start}")
         p = sh([str(REPO / "experiments" / "switch_arm.sh"), arm], timeout=600, check=False)
         log.write(p.stdout + p.stderr)
         if p.returncode != 0:

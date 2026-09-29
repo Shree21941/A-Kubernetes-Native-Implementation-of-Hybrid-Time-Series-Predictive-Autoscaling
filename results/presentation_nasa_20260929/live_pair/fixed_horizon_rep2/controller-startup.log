@@ -1,0 +1,19 @@
+Phase 5 - MAPE predictive autoscaler
+
+  compression            : 10x  (1 trace-minute = 6 wall-seconds)
+  control period         : 1 trace-min = 6 s wall
+  forecast horizon       : 1 trace-min = 6 s wall
+  look-back              : 60 trace-min = 360 s wall
+  replica bounds         : [1, 10]
+  per-pod capacity       : 3.135 req/s wall = 18.81 req/trace-min
+  scale-up cooldown      : 12.715 s wall (compressed 6 s vs physical 12.6403 s)
+  scale-down cooldown    : 30 s wall, 3 confirmations
+  dead-band              : 2 replica(s)
+  readiness-aware        : False  (required 1, using 1 trace-min step(s); Ready p95 12.715 s)
+  warm-up policy         : reactive
+  forecaster (arm)       : hybrid
+
+  WARNING: pod cold start p95 (12.7s wall) is >= the forecast horizon (6.0s wall at C=10). No t+1 forecaster can be proactive under these conditions - this is the D-004 regime and must be reported, not averaged away.
+
+  WARNING: pod cold start p95 consumes 212% of the forecast horizon.
+

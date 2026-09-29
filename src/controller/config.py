@@ -31,6 +31,7 @@ compared directly is `scale_up_cooldown_wall_s`, below.
 from __future__ import annotations
 
 import json
+import math
 import os
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
@@ -70,6 +71,14 @@ def _env_f(name: str, default: float) -> float:
 
 def _env_i(name: str, default: int) -> int:
     return int(os.environ.get(name, default))
+
+
+def _cold_start_p95_default() -> float:
+    if "POD_COLD_START_P95_WALL_S" in os.environ:
+        return float(os.environ["POD_COLD_START_P95_WALL_S"])
+    return float(_MEASURED.get(
+        "pod_cold_start_p95_wall_s",
+        _MEASURED.get("pod_cold_start_wall_s", 5.0)))
 
 
 @dataclass(frozen=True)
@@ -140,6 +149,21 @@ class Config:
         default_factory=lambda: (os.environ.get("POD_COLD_START_MEASURED") == "1")
         or ("pod_cold_start_wall_s" in _MEASURED
             and "POD_COLD_START_MEASURED" not in os.environ))
+    pod_cold_start_p95_wall_s: float = field(
+        default_factory=_cold_start_p95_default)
+
+    # ---- cold-start-aware horizon -------------------------------------------------
+    # The current bundle is a one-step model. Recursive forecasts let us select the
+    # lead time needed for pod readiness, but are capped because their error compounds.
+    readiness_aware: bool = field(default_factory=lambda:
+                                  os.environ.get("READINESS_AWARE_SCALING", "0") == "1")
+    max_forecast_horizon_trace_min: int = field(default_factory=lambda:
+                                                max(1, _env_i("MAX_FORECAST_HORIZON_TRACE_MIN", 5)))
+    forecast_overhead_wall_s: float = field(default_factory=lambda:
+                                             _env_f("FORECAST_OVERHEAD_WALL_S", 0.01))
+    # Set only from a validation-set under-forecast quantile. Zero means no margin.
+    forecast_error_margin_rpm_trace: float = field(default_factory=lambda:
+                                                   _env_f("FORECAST_ERROR_MARGIN_RPM_TRACE", 0.0))
 
     # ---- which forecaster this arm uses ---------------------------------------------
     # "hybrid"  = Prophet + residual network (the paper's method, Phase 2's headline)
@@ -197,13 +221,32 @@ class Config:
         and the physical time for the previous decision to take effect.
         """
         return max(self.scale_up_cooldown_trace_min * self.trace_minute_wall_s,
-                   self.pod_cold_start_wall_s)
+               self.pod_cold_start_p95_wall_s)
 
     @property
     def scale_down_cooldown_wall_s(self) -> float:
         # No physical floor needed: removing pods is fast, and the damping above is what
         # protects against premature scale-down.
         return self.scale_down_cooldown_trace_min * self.trace_minute_wall_s
+
+    @property
+    def required_readiness_horizon_steps(self) -> int:
+        if not self.readiness_aware:
+            return self.horizon_trace_min
+        lead_s = self.pod_cold_start_p95_wall_s + self.forecast_overhead_wall_s
+        return max(1, math.ceil(lead_s / self.control_period_wall_s))
+
+    @property
+    def forecast_horizon_steps(self) -> int:
+        return min(self.required_readiness_horizon_steps,
+                   self.max_forecast_horizon_trace_min)
+
+    @property
+    def readiness_horizon_shortfall_wall_s(self) -> float:
+        covered_s = self.forecast_horizon_steps * self.control_period_wall_s
+        required_s = (self.pod_cold_start_p95_wall_s + self.forecast_overhead_wall_s
+                      if self.readiness_aware else covered_s)
+        return max(0.0, required_s - covered_s)
 
     @property
     def per_pod_capacity_rpm_trace(self) -> float:
@@ -232,16 +275,23 @@ class Config:
         # The whole premise of a t+1 forecast is that a pod can be Ready within the
         # horizon. If it cannot, the forecast is correct and useless (D-004).
         horizon_wall = self.horizon_trace_min * self.trace_minute_wall_s
-        if self.pod_cold_start_wall_s >= horizon_wall:
+        if self.pod_cold_start_p95_wall_s >= horizon_wall:
             w.append(
-                f"pod cold start ({self.pod_cold_start_wall_s:.1f}s wall) is >= the "
+            f"pod cold start p95 ({self.pod_cold_start_p95_wall_s:.1f}s wall) is >= the "
                 f"forecast horizon ({horizon_wall:.1f}s wall at C={self.compression:g}). "
                 "No t+1 forecaster can be proactive under these conditions - this is "
                 "the D-004 regime and must be reported, not averaged away."
             )
-        elif self.pod_cold_start_wall_s > 0.5 * horizon_wall:
+        if self.readiness_aware and self.readiness_horizon_shortfall_wall_s > 0:
             w.append(
-                f"pod cold start consumes {self.pod_cold_start_wall_s / horizon_wall:.0%} "
+                f"readiness lead exceeds the recursive forecast cap by "
+                f"{self.readiness_horizon_shortfall_wall_s:.1f}s; the controller will "
+                "use recent observed demand as a conservative fallback."
+            )
+        elif self.pod_cold_start_p95_wall_s > 0.5 * horizon_wall:
+            w.append(
+                f"pod cold start p95 consumes "
+                f"{self.pod_cold_start_p95_wall_s / horizon_wall:.0%} "
                 "of the forecast horizon."
             )
         return w
@@ -265,6 +315,10 @@ class Config:
             f"  scale-down cooldown    : {self.scale_down_cooldown_wall_s:g} s wall, "
             f"{self.scale_down_confirmations} confirmations",
             f"  dead-band              : {self.deadband_replicas} replica(s)",
+            f"  readiness-aware        : {self.readiness_aware}  "
+            f"(required {self.required_readiness_horizon_steps}, "
+            f"using {self.forecast_horizon_steps} trace-min step(s); "
+            f"Ready p95 {self.pod_cold_start_p95_wall_s:g} s)",
             f"  warm-up policy         : {self.warmup_policy}",
             f"  forecaster (arm)       : {self.forecaster}",
         ])
@@ -277,6 +331,9 @@ class Config:
             scale_up_cooldown_wall_s=self.scale_up_cooldown_wall_s,
             scale_down_cooldown_wall_s=self.scale_down_cooldown_wall_s,
             per_pod_capacity_rpm_trace=self.per_pod_capacity_rpm_trace,
+            required_readiness_horizon_steps=self.required_readiness_horizon_steps,
+            forecast_horizon_steps=self.forecast_horizon_steps,
+            readiness_horizon_shortfall_wall_s=self.readiness_horizon_shortfall_wall_s,
         )
         return d
 

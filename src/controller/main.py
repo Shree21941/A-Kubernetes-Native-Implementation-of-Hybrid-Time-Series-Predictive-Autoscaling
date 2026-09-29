@@ -39,6 +39,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import signal
 import sys
 import time
@@ -122,8 +123,9 @@ def main() -> int:
     print(f"  kubernetes   : {ex.context}, {cfg.namespace}/{cfg.deployment} "
           f"spec={scale.spec_replicas} ready={scale.ready_replicas}")
 
-    trace_start = np.datetime64(
-        args.trace_start or fc.meta["table_covers"][0].replace(" ", "T"), "m")
+    trace_start_value = (args.trace_start or os.environ.get("TRACE_START")
+                         or fc.meta["table_covers"][0].replace(" ", "T"))
+    trace_start = np.datetime64(trace_start_value.replace(" ", "T"), "m")
     run_id = args.run_id or f"{datetime.now(timezone.utc):%Y%m%d-%H%M%S}"
     log = DecisionLog(cfg.decisions_path)
     log.write(dict(kind="run_start", run_id=run_id, ts=time.time(),
@@ -179,11 +181,29 @@ def main() -> int:
             rec.update(mode="warmup_reactive", predicted_rate=round(predicted, 3))
         else:
             try:
-                f = fc.predict(win.values, win.timestamps, trace_now
-                               + np.timedelta64(cfg.horizon_trace_min, "m"))
+                horizon_steps = cfg.forecast_horizon_steps
+                f = fc.predict_horizon(
+                    win.values, win.timestamps,
+                    trace_now + np.timedelta64(1, "m"), horizon_steps)
                 predicted = f.value
+                decision_rate = predicted
+                if cfg.readiness_aware:
+                    decision_rate += cfg.forecast_error_margin_rpm_trace
+                    if cfg.readiness_horizon_shortfall_wall_s > 0:
+                        # Beyond the recursive model's validated horizon, do not assume
+                        # demand falls while pods are still starting.
+                        recent = win.values[-min(3, len(win.values)):]
+                        decision_rate = max(decision_rate, float(np.max(recent)))
                 rec.update(mode="forecast", arm=f"predictive-{cfg.forecaster}",
                            predicted_rate=round(f.value, 3),
+                           decision_rate=round(decision_rate, 3),
+                           forecast_horizon_steps=horizon_steps,
+                           readiness_required_steps=cfg.required_readiness_horizon_steps,
+                           readiness_wall_p95_s=round(cfg.pod_cold_start_p95_wall_s, 3),
+                           readiness_horizon_shortfall_wall_s=round(
+                               cfg.readiness_horizon_shortfall_wall_s, 3),
+                           forecast_error_margin_rpm_trace=round(
+                               cfg.forecast_error_margin_rpm_trace, 3),
                            prophet_term=round(f.prophet_term, 3),
                            residual_term=round(f.residual_term, 3),
                            forecast_clamped_negative=f.clamped,
@@ -199,9 +219,11 @@ def main() -> int:
                 continue
 
         # -- Plan ------------------------------------------------------------------
-        d = planner.plan(predicted, current=scale.spec_replicas,
+        plan_rate = decision_rate if not warming else predicted
+        d = planner.plan(plan_rate, current=scale.spec_replicas,
                          now=time.perf_counter(),
-                         warming_up=warming and cfg.warmup_policy == "hold")
+                 warming_up=warming and cfg.warmup_policy == "hold",
+                 ready_replicas=scale.ready_replicas)
         rec.update(d.to_dict())
 
         # -- Execute ---------------------------------------------------------------

@@ -1,0 +1,13 @@
+cluster=kind-aiops-cluster
+segment=burst
+trace_start=1995-08-24 06:52:00
+trace_minutes=180
+compression=10
+replicates=2
+startup_delay_s=10
+measured_ready_mean_s=12.6403
+measured_ready_p95_s=12.715
+capacity_rps=3.135
+slo_p95_ms=593.7
+seed_per_rep=1001+rep
+arms=fixed_horizon,readiness_aware

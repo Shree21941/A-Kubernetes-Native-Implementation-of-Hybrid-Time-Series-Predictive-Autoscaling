@@ -42,6 +42,7 @@ class Action(str, Enum):
     HOLD_DEADBAND = "hold_deadband"
     HOLD_COOLDOWN = "hold_cooldown"
     HOLD_CONFIRMING = "hold_confirming"
+    HOLD_PENDING = "hold_pending"
     HOLD_NO_CHANGE = "hold_no_change"
     HOLD_WARMUP = "hold_warmup"
 
@@ -95,7 +96,8 @@ class Planner:
     # -- the loop's entry point ----------------------------------------------------
 
     def plan(self, predicted_rate: float, current: int, now: float,
-             warming_up: bool = False) -> Decision:
+             warming_up: bool = False,
+             ready_replicas: int | None = None) -> Decision:
         cfg = self.cfg
         since = None if self._last_scale_at is None else now - self._last_scale_at
 
@@ -122,6 +124,12 @@ class Planner:
         clamped = max(cfg.min_replicas, min(cfg.max_replicas, raw))
 
         direction = self._direction(clamped, current)
+
+        if (direction is Action.SCALE_DOWN and ready_replicas is not None
+            and ready_replicas < current):
+            return mk(current, Action.HOLD_PENDING,
+                  f"scale-down held while {current - ready_replicas} requested "
+                  "replica(s) are not Ready", raw, clamped)
 
         if direction is Action.HOLD_NO_CHANGE:
             self._reset_pending()

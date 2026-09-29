@@ -1,0 +1,207 @@
+Phase 5 - MAPE predictive autoscaler
+
+  compression            : 10x  (1 trace-minute = 6 wall-seconds)
+  control period         : 1 trace-min = 6 s wall
+  forecast horizon       : 1 trace-min = 6 s wall
+  look-back              : 60 trace-min = 360 s wall
+  replica bounds         : [1, 10]
+  per-pod capacity       : 3.135 req/s wall = 18.81 req/trace-min
+  scale-up cooldown      : 12.715 s wall (compressed 6 s vs physical 12.6403 s)
+  scale-down cooldown    : 30 s wall, 3 confirmations
+  dead-band              : 2 replica(s)
+  readiness-aware        : True  (required 3, using 3 trace-min step(s); Ready p95 12.715 s)
+  warm-up policy         : reactive
+  forecaster (arm)       : hybrid
+
+  WARNING: pod cold start p95 (12.7s wall) is >= the forecast horizon (6.0s wall at C=10). No t+1 forecaster can be proactive under these conditions - this is the D-004 regime and must be reported, not averaged away.
+
+  WARNING: pod cold start p95 consumes 212% of the forecast horizon.
+
+  prometheus   : ready  (HTTP 200)
+  kubernetes   : in-cluster, aiops/target-app spec=1 ready=1
+  run_id       : 20260929-065928
+  trace start  : 1995-08-24T06:52
+  decisions    : /var/log/controller/decisions.jsonl
+  mode         : LIVE
+
+  [   0]  1995-08-24T06:52  obs     0.0  pred     0.0  want  1  have  1/1   hold_no_change   no change
+  [   1]* 1995-08-24T06:53  obs    29.3  pred    29.3  want  2  have  1/1   scale_up         scaled to 2
+  [   2]  1995-08-24T06:54  obs    25.3  pred    25.3  want  2  have  2/1   hold_no_change   no change
+  [   3]  1995-08-24T06:55  obs    30.7  pred    30.7  want  2  have  2/1   hold_no_change   no change
+  [   4]  1995-08-24T06:56  obs     5.3  pred     5.3  want  1  have  2/2   hold_deadband    no change
+  [   5]  1995-08-24T06:57  obs     1.3  pred     1.3  want  1  have  2/2   hold_deadband    no change
+  [   6]  1995-08-24T06:58  obs    13.3  pred    13.3  want  1  have  2/2   hold_deadband    no change
+  [   7]  1995-08-24T06:59  obs    13.3  pred    13.3  want  1  have  2/2   hold_deadband    no change
+  [   8]  1995-08-24T07:00  obs     5.3  pred     5.3  want  1  have  2/2   hold_deadband    no change
+  [   9]  1995-08-24T07:01  obs     5.3  pred     5.3  want  1  have  2/2   hold_deadband    no change
+  [  10]  1995-08-24T07:02  obs     4.0  pred     4.0  want  1  have  2/2   hold_deadband    no change
+  [  11]  1995-08-24T07:03  obs    28.0  pred    28.0  want  2  have  2/2   hold_no_change   no change
+  [  12]  1995-08-24T07:04  obs    34.7  pred    34.7  want  2  have  2/2   hold_no_change   no change
+  [  13]  1995-08-24T07:05  obs    21.3  pred    21.3  want  2  have  2/2   hold_no_change   no change
+  [  14]  1995-08-24T07:06  obs     5.3  pred     5.3  want  1  have  2/2   hold_deadband    no change
+  [  15]  1995-08-24T07:07  obs     2.7  pred     2.7  want  1  have  2/2   hold_deadband    no change
+  [  16]  1995-08-24T07:08  obs    14.7  pred    14.7  want  1  have  2/2   hold_deadband    no change
+  [  17]  1995-08-24T07:09  obs    22.7  pred    22.7  want  2  have  2/2   hold_no_change   no change
+  [  18]  1995-08-24T07:10  obs    12.0  pred    12.0  want  1  have  2/2   hold_deadband    no change
+  [  19]  1995-08-24T07:11  obs     9.3  pred     9.3  want  1  have  2/2   hold_deadband    no change
+  [  20]  1995-08-24T07:12  obs    13.3  pred    13.3  want  1  have  2/2   hold_deadband    no change
+  [  21]  1995-08-24T07:13  obs    10.7  pred    10.7  want  1  have  2/2   hold_deadband    no change
+  [  22]  1995-08-24T07:14  obs    14.7  pred    14.7  want  1  have  2/2   hold_deadband    no change
+  [  23]  1995-08-24T07:15  obs    21.3  pred    21.3  want  2  have  2/2   hold_no_change   no change
+  [  24]  1995-08-24T07:16  obs    29.3  pred    29.3  want  2  have  2/2   hold_no_change   no change
+  [  25]  1995-08-24T07:17  obs    25.3  pred    25.3  want  2  have  2/2   hold_no_change   no change
+  [  26]  1995-08-24T07:18  obs    13.3  pred    13.3  want  1  have  2/2   hold_deadband    no change
+  [  27]  1995-08-24T07:19  obs    34.8  pred    34.8  want  2  have  2/2   hold_no_change   no change
+  [  28]* 1995-08-24T07:20  obs    38.7  pred    38.7  want  3  have  2/2   scale_up         scaled to 3
+  [  29]  1995-08-24T07:21  obs    45.3  pred    45.3  want  3  have  3/2   hold_no_change   no change
+  [  30]  1995-08-24T07:22  obs     9.3  pred     9.3  want  1  have  3/2   hold_pending     no change
+  [  31]  1995-08-24T07:23  obs    16.0  pred    16.0  want  1  have  3/3   hold_cooldown    no change
+  [  32]  1995-08-24T07:24  obs     9.3  pred     9.3  want  1  have  3/3   hold_cooldown    no change
+  [  33]  1995-08-24T07:25  obs    30.7  pred    30.7  want  2  have  3/3   hold_deadband    no change
+  [  34]  1995-08-24T07:26  obs    34.7  pred    34.7  want  2  have  3/3   hold_deadband    no change
+  [  35]  1995-08-24T07:27  obs    13.3  pred    13.3  want  1  have  3/3   hold_confirming  no change
+  [  36]  1995-08-24T07:28  obs     5.3  pred     5.3  want  1  have  3/3   hold_confirming  no change
+  [  37]* 1995-08-24T07:29  obs    18.7  pred    18.7  want  1  have  3/3   scale_down       scaled to 1
+  [  38]  1995-08-24T07:30  obs     1.3  pred     1.3  want  1  have  1/1   hold_no_change   no change
+  [  39]  1995-08-24T07:31  obs    13.3  pred    13.3  want  1  have  1/1   hold_no_change   no change
+  [  40]  1995-08-24T07:32  obs     4.0  pred     4.0  want  1  have  1/1   hold_no_change   no change
+  [  41]* 1995-08-24T07:33  obs    21.3  pred    21.3  want  2  have  1/1   scale_up         scaled to 2
+  [  42]  1995-08-24T07:34  obs    14.7  pred    14.7  want  1  have  2/1   hold_pending     no change
+  [  43]  1995-08-24T07:35  obs    18.7  pred    18.7  want  1  have  2/1   hold_pending     no change
+  [  44]  1995-08-24T07:36  obs    13.3  pred    13.3  want  1  have  2/2   hold_deadband    no change
+  [  45]  1995-08-24T07:37  obs    14.7  pred    14.7  want  1  have  2/2   hold_deadband    no change
+  [  46]  1995-08-24T07:38  obs     9.3  pred     9.3  want  1  have  2/2   hold_deadband    no change
+  [  47]  1995-08-24T07:39  obs    33.5  pred    33.5  want  2  have  2/2   hold_no_change   no change
+  [  48]  1995-08-24T07:40  obs     9.3  pred     9.3  want  1  have  2/2   hold_deadband    no change
+  [  49]* 1995-08-24T07:41  obs    44.0  pred    44.0  want  3  have  2/2   scale_up         scaled to 3
+  [  50]  1995-08-24T07:42  obs    13.3  pred    13.3  want  1  have  3/2   hold_pending     no change
+  [  51]  1995-08-24T07:43  obs    33.3  pred    33.3  want  2  have  3/2   hold_pending     no change
+  [  52]  1995-08-24T07:44  obs    38.7  pred    38.7  want  3  have  3/3   hold_no_change   no change
+  [  53]  1995-08-24T07:45  obs    48.0  pred    48.0  want  3  have  3/3   hold_no_change   no change
+  [  54]  1995-08-24T07:46  obs    44.0  pred    44.0  want  3  have  3/3   hold_no_change   no change
+  [  55]  1995-08-24T07:47  obs    36.0  pred    36.0  want  2  have  3/3   hold_deadband    no change
+  [  56]  1995-08-24T07:48  obs    54.7  pred    54.7  want  3  have  3/3   hold_no_change   no change
+  [  57]  1995-08-24T07:49  obs    37.3  pred    37.3  want  2  have  3/3   hold_deadband    no change
+  [  58]  1995-08-24T07:50  obs    37.3  pred    37.3  want  2  have  3/3   hold_deadband    no change
+  [  59]  1995-08-24T07:51  obs    49.3  pred    49.3  want  3  have  3/3   hold_no_change   no change
+  [  60]  1995-08-24T07:52  obs    37.3  pred    38.1  want  3  have  3/3   hold_no_change   no change
+  [  61]  1995-08-24T07:53  obs    67.2  pred    42.3  want  3  have  3/3   hold_no_change   no change
+  [  62]  1995-08-24T07:54  obs    33.3  pred    40.8  want  3  have  3/3   hold_no_change   no change
+  [  63]  1995-08-24T07:55  obs    29.3  pred    39.6  want  3  have  3/3   hold_no_change   no change
+  [  64]  1995-08-24T07:56  obs    40.0  pred    40.1  want  3  have  3/3   hold_no_change   no change
+  [  65]  1995-08-24T07:57  obs    37.3  pred    40.1  want  3  have  3/3   hold_no_change   no change
+  [  66]  1995-08-24T07:58  obs    32.0  pred    39.5  want  3  have  3/3   hold_no_change   no change
+  [  67]  1995-08-24T07:59  obs    32.0  pred    39.2  want  3  have  3/3   hold_no_change   no change
+  [  68]  1995-08-24T08:00  obs    16.0  pred    36.7  want  2  have  3/3   hold_deadband    no change
+  [  69]  1995-08-24T08:01  obs    37.3  pred    38.1  want  3  have  3/3   hold_no_change   no change
+  [  70]  1995-08-24T08:02  obs    49.3  pred    40.6  want  3  have  3/3   hold_no_change   no change
+  [  71]  1995-08-24T08:03  obs    30.7  pred    39.7  want  3  have  3/3   hold_no_change   no change
+  [  72]  1995-08-24T08:04  obs    25.3  pred    38.5  want  3  have  3/3   hold_no_change   no change
+  [  73]  1995-08-24T08:05  obs    33.3  pred    38.8  want  3  have  3/3   hold_no_change   no change
+  [  74]  1995-08-24T08:06  obs    22.7  pred    37.2  want  2  have  3/3   hold_deadband    no change
+  [  75]  1995-08-24T08:07  obs    10.7  pred    34.2  want  2  have  3/3   hold_deadband    no change
+  [  76]  1995-08-24T08:08  obs    34.7  pred    36.1  want  2  have  3/3   hold_deadband    no change
+  [  77]  1995-08-24T08:09  obs    60.0  pred    41.0  want  3  have  3/3   hold_no_change   no change
+  [  78]  1995-08-24T08:10  obs    33.3  pred    40.1  want  3  have  3/3   hold_no_change   no change
+  [  79]  1995-08-24T08:11  obs     6.7  pred    35.6  want  2  have  3/3   hold_deadband    no change
+  [  80]  1995-08-24T08:12  obs    30.7  pred    36.4  want  2  have  3/3   hold_deadband    no change
+  [  81]  1995-08-24T08:13  obs    34.7  pred    37.0  want  2  have  3/3   hold_deadband    no change
+  [  82]  1995-08-24T08:14  obs    40.0  pred    38.4  want  3  have  3/3   hold_no_change   no change
+  [  83]  1995-08-24T08:15  obs    30.7  pred    37.7  want  3  have  3/3   hold_no_change   no change
+  [  84]  1995-08-24T08:16  obs    38.7  pred    38.8  want  3  have  3/3   hold_no_change   no change
+  [  85]  1995-08-24T08:17  obs    30.7  pred    38.0  want  3  have  3/3   hold_no_change   no change
+  [  86]  1995-08-24T08:18  obs    33.3  pred    37.9  want  3  have  3/3   hold_no_change   no change
+  [  87]  1995-08-24T08:19  obs    88.0  pred    47.1  want  3  have  3/3   hold_no_change   no change
+  [  88]  1995-08-24T08:20  obs    69.3  pred    49.4  want  3  have  3/3   hold_no_change   no change
+  [  89]  1995-08-24T08:21  obs    54.7  pred    49.5  want  3  have  3/3   hold_no_change   no change
+  [  90]  1995-08-24T08:22  obs    28.0  pred    46.1  want  3  have  3/3   hold_no_change   no change
+  [  91]  1995-08-24T08:23  obs    37.3  pred    45.1  want  3  have  3/3   hold_no_change   no change
+  [  92]  1995-08-24T08:24  obs    57.3  pred    47.2  want  3  have  3/3   hold_no_change   no change
+  [  93]  1995-08-24T08:25  obs    49.3  pred    47.4  want  3  have  3/3   hold_no_change   no change
+  [  94]  1995-08-24T08:26  obs    54.7  pred    48.6  want  3  have  3/3   hold_no_change   no change
+  [  95]  1995-08-24T08:27  obs    36.0  pred    46.7  want  3  have  3/3   hold_no_change   no change
+  [  96]  1995-08-24T08:28  obs    54.7  pred    48.4  want  3  have  3/3   hold_no_change   no change
+  [  97]  1995-08-24T08:29  obs    24.0  pred    44.8  want  3  have  3/3   hold_no_change   no change
+  [  98]  1995-08-24T08:30  obs    29.3  pred    43.2  want  3  have  3/3   hold_no_change   no change
+  [  99]  1995-08-24T08:31  obs    18.7  pred    39.9  want  3  have  3/3   hold_no_change   no change
+  [ 100]  1995-08-24T08:32  obs    33.3  pred    40.1  want  3  have  3/3   hold_no_change   no change
+  [ 101]  1995-08-24T08:33  obs    30.7  pred    39.3  want  3  have  3/3   hold_no_change   no change
+  [ 102]  1995-08-24T08:34  obs    48.0  pred    42.2  want  3  have  3/3   hold_no_change   no change
+  [ 103]  1995-08-24T08:35  obs    61.3  pred    46.1  want  3  have  3/3   hold_no_change   no change
+  [ 104]  1995-08-24T08:36  obs    56.0  pred    47.8  want  3  have  3/3   hold_no_change   no change
+  [ 105]  1995-08-24T08:37  obs    37.3  pred    46.2  want  3  have  3/3   hold_no_change   no change
+  [ 106]  1995-08-24T08:38  obs    38.7  pred    45.4  want  3  have  3/3   hold_no_change   no change
+  [ 107]  1995-08-24T08:39  obs    24.0  pred    42.0  want  3  have  3/3   hold_no_change   no change
+  [ 108]  1995-08-24T08:40  obs    33.3  pred    41.3  want  3  have  3/3   hold_no_change   no change
+  [ 109]  1995-08-24T08:41  obs    34.7  pred    40.7  want  3  have  3/3   hold_no_change   no change
+  [ 110]  1995-08-24T08:42  obs    57.3  pred    44.5  want  3  have  3/3   hold_no_change   no change
+  [ 111]  1995-08-24T08:43  obs    38.7  pred    43.3  want  3  have  3/3   hold_no_change   no change
+  [ 112]  1995-08-24T08:44  obs    53.3  pred    45.6  want  3  have  3/3   hold_no_change   no change
+  [ 113]  1995-08-24T08:45  obs    45.3  pred    45.5  want  3  have  3/3   hold_no_change   no change
+  [ 114]  1995-08-24T08:46  obs    53.3  pred    46.9  want  3  have  3/3   hold_no_change   no change
+  [ 115]  1995-08-24T08:47  obs    57.3  pred    48.5  want  3  have  3/3   hold_no_change   no change
+  [ 116]  1995-08-24T08:48  obs    62.7  pred    50.5  want  3  have  3/3   hold_no_change   no change
+  [ 117]  1995-08-24T08:49  obs    29.3  pred    46.6  want  3  have  3/3   hold_no_change   no change
+  [ 118]  1995-08-24T08:50  obs    65.3  pred    50.2  want  3  have  3/3   hold_no_change   no change
+  [ 119]  1995-08-24T08:51  obs    50.7  pred    49.6  want  3  have  3/3   hold_no_change   no change
+  [ 120]  1995-08-24T08:52  obs    54.7  pred    50.2  want  3  have  3/3   hold_no_change   no change
+  [ 121]  1995-08-24T08:53  obs    45.3  pred    49.2  want  3  have  3/3   hold_no_change   no change
+  [ 122]  1995-08-24T08:54  obs    33.3  pred    46.6  want  3  have  3/3   hold_no_change   no change
+  [ 123]  1995-08-24T08:55  obs    28.0  pred    43.7  want  3  have  3/3   hold_no_change   no change
+  [ 124]  1995-08-24T08:56  obs    76.0  pred    50.3  want  3  have  3/3   hold_no_change   no change
+  [ 125]  1995-08-24T08:57  obs    48.0  pred    49.2  want  3  have  3/3   hold_no_change   no change
+  [ 126]  1995-08-24T08:58  obs    64.0  pred    51.8  want  3  have  3/3   hold_no_change   no change
+  [ 127]  1995-08-24T08:59  obs    64.0  pred    53.4  want  3  have  3/3   hold_no_change   no change
+  [ 128]  1995-08-24T09:00  obs    48.0  pred    52.1  want  3  have  3/3   hold_no_change   no change
+  [ 129]  1995-08-24T09:01  obs    56.0  pred    52.7  want  3  have  3/3   hold_no_change   no change
+  [ 130]  1995-08-24T09:02  obs    64.0  pred    54.2  want  3  have  3/3   hold_no_change   no change
+  [ 131]  1995-08-24T09:03  obs    68.0  pred    55.9  want  3  have  3/3   hold_no_change   no change
+  [ 132]  1995-08-24T09:04  obs    45.3  pred    53.8  want  3  have  3/3   hold_no_change   no change
+  [ 133]  1995-08-24T09:05  obs    33.3  pred    50.7  want  3  have  3/3   hold_no_change   no change
+  [ 134]  1995-08-24T09:06  obs    68.0  pred    54.0  want  3  have  3/3   hold_no_change   no change
+  [ 135]* 1995-08-24T09:07  obs    73.3  pred    56.5  want  4  have  3/3   scale_up         scaled to 4
+  [ 136]  1995-08-24T09:08  obs    26.7  pred    51.6  want  3  have  4/3   hold_pending     no change
+  [ 137]  1995-08-24T09:09  obs    50.7  pred    52.3  want  3  have  4/3   hold_pending     no change
+  [ 138]  1995-08-24T09:10  obs    34.7  pred    49.5  want  3  have  4/4   hold_deadband    no change
+  [ 139]  1995-08-24T09:11  obs    45.3  pred    49.5  want  3  have  4/4   hold_deadband    no change
+  [ 140]  1995-08-24T09:12  obs    57.3  pred    51.3  want  3  have  4/4   hold_deadband    no change
+  [ 141]  1995-08-24T09:13  obs    38.7  pred    49.3  want  3  have  4/4   hold_deadband    no change
+  [ 142]  1995-08-24T09:14  obs    44.0  pred    49.0  want  3  have  4/4   hold_deadband    no change
+  [ 143]  1995-08-24T09:15  obs    38.7  pred    47.6  want  3  have  4/4   hold_deadband    no change
+  [ 144]  1995-08-24T09:16  obs    82.7  pred    54.6  want  3  have  4/4   hold_deadband    no change
+  [ 145]  1995-08-24T09:17  obs    76.9  pred    57.3  want  4  have  4/4   hold_no_change   no change
+  [ 146]  1995-08-24T09:18  obs    21.3  pred    51.7  want  3  have  4/4   hold_deadband    no change
+  [ 147]  1995-08-24T09:19  obs    49.3  pred    52.2  want  3  have  4/4   hold_deadband    no change
+  [ 148]  1995-08-24T09:20  obs    48.0  pred    51.3  want  3  have  4/4   hold_deadband    no change
+  [ 149]  1995-08-24T09:21  obs    48.0  pred    50.9  want  3  have  4/4   hold_deadband    no change
+  [ 150]  1995-08-24T09:22  obs    38.7  pred    48.9  want  3  have  4/4   hold_deadband    no change
+  [ 151]  1995-08-24T09:23  obs    66.7  pred    52.6  want  3  have  4/4   hold_deadband    no change
+  [ 152]  1995-08-24T09:24  obs    58.7  pred    53.2  want  3  have  4/4   hold_deadband    no change
+  [ 153]  1995-08-24T09:25  obs    41.3  pred    51.1  want  3  have  4/4   hold_deadband    no change
+  [ 154]  1995-08-24T09:26  obs    62.7  pred    53.4  want  3  have  4/4   hold_deadband    no change
+  [ 155]  1995-08-24T09:27  obs    54.7  pred    53.2  want  3  have  4/4   hold_deadband    no change
+  [ 156]  1995-08-24T09:28  obs    64.0  pred    54.9  want  3  have  4/4   hold_deadband    no change
+  [ 157]  1995-08-24T09:29  obs    58.7  pred    55.1  want  3  have  4/4   hold_deadband    no change
+  [ 158]  1995-08-24T09:30  obs    61.3  pred    55.8  want  3  have  4/4   hold_deadband    no change
+  [ 159]  1995-08-24T09:31  obs    54.7  pred    55.3  want  3  have  4/4   hold_deadband    no change
+  [ 160]  1995-08-24T09:32  obs    56.0  pred    55.2  want  3  have  4/4   hold_deadband    no change
+  [ 161]  1995-08-24T09:33  obs    45.3  pred    53.4  want  3  have  4/4   hold_deadband    no change
+  [ 162]  1995-08-24T09:34  obs    36.0  pred    50.6  want  3  have  4/4   hold_deadband    no change
+  [ 163]  1995-08-24T09:35  obs    29.3  pred    47.2  want  3  have  4/4   hold_deadband    no change
+  [ 164]  1995-08-24T09:36  obs    62.7  pred    50.9  want  3  have  4/4   hold_deadband    no change
+  [ 165]  1995-08-24T09:37  obs    66.7  pred    53.4  want  3  have  4/4   hold_deadband    no change
+  [ 166]  1995-08-24T09:38  obs    26.7  pred    48.6  want  3  have  4/4   hold_deadband    no change
+  [ 167]  1995-08-24T09:39  obs    30.7  pred    46.1  want  3  have  4/4   hold_deadband    no change
+  [ 168]  1995-08-24T09:40  obs    16.0  pred    40.5  want  3  have  4/4   hold_deadband    no change
+  [ 169]  1995-08-24T09:41  obs    52.0  pred    44.5  want  3  have  4/4   hold_deadband    no change
+  [ 170]  1995-08-24T09:42  obs    22.7  pred    39.6  want  3  have  4/4   hold_deadband    no change
+  [ 171]  1995-08-24T09:43  obs    79.8  pred    49.9  want  3  have  4/4   hold_deadband    no change
+  [ 172]  1995-08-24T09:44  obs    36.0  pred    45.7  want  3  have  4/4   hold_deadband    no change
+  [ 173]  1995-08-24T09:45  obs    45.3  pred    46.1  want  3  have  4/4   hold_deadband    no change
+  [ 174]  1995-08-24T09:46  obs    24.0  pred    41.3  want  3  have  4/4   hold_deadband    no change
+  [ 175]  1995-08-24T09:47  obs    74.8  pred    49.2  want  3  have  4/4   hold_deadband    no change
+  [ 176]  1995-08-24T09:48  obs    46.7  pred    47.3  want  3  have  4/4   hold_deadband    no change
+  [ 177]  1995-08-24T09:49  obs    64.0  pred    50.3  want  3  have  4/4   hold_deadband    no change
+  [ 178]  1995-08-24T09:50  obs    25.3  pred    44.6  want  3  have  4/4   hold_deadband    no change
+  [ 179]  1995-08-24T09:51  obs    26.7  pred    41.1  want  3  have  4/4   hold_deadband    no change
+  [ 180]  1995-08-24T09:52  obs    29.3  pred    38.5  want  3  have  4/4   hold_deadband    no change

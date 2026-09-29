@@ -166,6 +166,8 @@ def main() -> int:
     ap.add_argument("--from", dest="frm", type=int, default=1)
     ap.add_argument("--to", type=int, default=5)
     ap.add_argument("--repeats", type=int, default=5)
+    ap.add_argument("--out", type=Path, default=RESULTS / "phase3_coldstart.json",
+                    help="JSON output path (defaults to results/phase3_coldstart.json)")
     args = ap.parse_args()
 
     config.load_kube_config()
@@ -191,6 +193,8 @@ def main() -> int:
         return dict(
             mean=round(statistics.mean(xs), 3),
             median=round(statistics.median(xs), 3),
+            p95=round(statistics.quantiles(xs, n=20, method="inclusive")[18], 3)
+            if len(xs) > 1 else round(float(xs[0]), 3),
             stdev=round(statistics.stdev(xs), 3) if len(xs) > 1 else 0.0,
             min=round(min(xs), 3), max=round(max(xs), 3),
         )
@@ -207,7 +211,8 @@ def main() -> int:
         trials=trials,
     )
     RESULTS.mkdir(parents=True, exist_ok=True)
-    (RESULTS / "phase3_coldstart.json").write_text(json.dumps(summary, indent=2))
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps(summary, indent=2))
 
     print()
     print("Pod cold-start latency")
@@ -246,7 +251,7 @@ def main() -> int:
         print("  => the horizon is TOO SHORT: pods cannot be Ready in time.")
     elif m > 30:
         print("  => over half the horizon is consumed by pod startup.")
-    print(f"\nwrote results/phase3_coldstart.json")
+    print(f"\nwrote {args.out}")
     return 0
 
 

@@ -74,6 +74,16 @@ def load_measurements() -> dict:
     cs = json.loads(COLDSTART.read_text())
     cap = json.loads(CAPACITY.read_text())
 
+    ready_trials = [float(t["all_ready_s"]) for t in cs.get("trials", [])]
+    if len(ready_trials) > 1:
+        ordered = sorted(ready_trials)
+        rank = (len(ordered) - 1) * 0.95
+        lower, upper = int(rank), min(int(rank) + 1, len(ordered) - 1)
+        ready_p95 = ordered[lower] + (ordered[upper] - ordered[lower]) * (rank - lower)
+    else:
+        ready_p95 = float(cs["all_ready"].get(
+            "p95", cs["all_ready"]["mean"]))
+
     # The capacity file must state it came from a pod. calibrate.py writes
     # phase4_capacity_local.json under --spawn and phase4_capacity.json under --url, so
     # the filename already encodes this - but check the recorded note too, because a file
@@ -96,6 +106,7 @@ def load_measurements() -> dict:
         # all_ready mean is the number the cooldown floor needs: the time until the
         # cluster has actually responded to a scale-up decision.
         pod_cold_start_wall_s=float(cs["all_ready"]["mean"]),
+        pod_cold_start_p95_wall_s=round(ready_p95, 4),
         pod_cold_start_median_s=float(cs["all_ready"]["median"]),
         pod_cold_start_sd_s=float(cs["all_ready"]["stdev"]),
         pod_first_ready_wall_s=(float(cs["first_ready"]["mean"])
@@ -130,6 +141,9 @@ def do_wire(m: dict) -> None:
          rf'\g<1>{cap}\g<2>', "controller PER_POD_CAPACITY_RPS"),
         (r'(- \{name: POD_COLD_START_WALL_S, value: ")[^"]*(")',
          rf'\g<1>{cs}\g<2>', "controller POD_COLD_START_WALL_S"),
+        (r'(- \{name: POD_COLD_START_P95_WALL_S, value: ")[^"]*(")',
+         rf'\g<1>{m["pod_cold_start_p95_wall_s"]:.4f}\g<2>',
+         "controller POD_COLD_START_P95_WALL_S"),
         (r'(- \{name: POD_COLD_START_MEASURED, value: ")[^"]*(")',
          r'\g<1>1\g<2>', "controller POD_COLD_START_MEASURED"),
     ])
@@ -174,6 +188,7 @@ def do_check(m: dict) -> int:
 
     c_cap = env_of("PER_POD_CAPACITY_RPS")
     c_cs = env_of("POD_COLD_START_WALL_S")
+    c_cs_p95 = env_of("POD_COLD_START_P95_WALL_S")
     c_meas = env_of("POD_COLD_START_MEASURED")
     k_thr = re.search(r'threshold: "([^"]*)"', ktext)
     k_thr = k_thr.group(1) if k_thr else None
@@ -184,6 +199,10 @@ def do_check(m: dict) -> int:
     ck("controller cold start == measured",
        c_cs is not None and abs(float(c_cs) - m["pod_cold_start_wall_s"]) < 5e-3,
        f"manifest={c_cs} measured={m['pod_cold_start_wall_s']:.3f}")
+    ck("controller cold-start p95 == measured",
+       c_cs_p95 is not None
+       and abs(float(c_cs_p95) - m["pod_cold_start_p95_wall_s"]) < 5e-3,
+       f"manifest={c_cs_p95} measured={m['pod_cold_start_p95_wall_s']:.4f}")
     ck("POD_COLD_START_MEASURED == 1", c_meas == "1",
        f"manifest={c_meas} (0 means the controller warns it is running on a guess)")
     ck("KEDA threshold == controller capacity",
@@ -205,7 +224,9 @@ def do_check(m: dict) -> int:
         saved = json.loads(OUT.read_text())
         ck("measured_constants.json matches the measurement files",
            abs(saved.get("per_pod_capacity_rps", -1) - m["per_pod_capacity_rps"]) < 5e-4
-           and abs(saved.get("slo_ms", -1) - m["slo_ms"]) < 5e-3,
+           and abs(saved.get("slo_ms", -1) - m["slo_ms"]) < 5e-3
+           and abs(saved.get("pod_cold_start_p95_wall_s", -1)
+               - m["pod_cold_start_p95_wall_s"]) < 5e-3,
            "re-run without --check if stale")
 
     ck("capacity ramp bracketed the SLO", m["capacity_bracketed"],
